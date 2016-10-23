@@ -1,0 +1,91 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsFragment"
+    android:background="@drawable/level_1"
+    android:id="@+id/fragment_settings">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_pick_puzzle">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:src="@drawable/level_1"
+            android:contentDescription="@string/default_image"
+            android:layout_marginBottom="20dp"
+            android:layout_weight=".5"/>
+
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:id="@+id/tableLayout"
+            android:layout_weight=".5">
+
+            <TableRow
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/rows"
+                    android:layout_weight="1"
+                    android:textAlignment="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/columns"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <NumberPicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPickerRows"
+                    android:background="@drawable/gradient"
+                    android:descendantFocusability="beforeDescendants"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"/>
+
+                <NumberPicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPickerCols"
+                    android:background="@drawable/gradient"
+                    android:descendantFocusability="beforeDescendants"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_free_play_puzzle"
+            android:id="@+id/button_pick_puzzle"
+            android:background="@drawable/button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+</FrameLayout>
