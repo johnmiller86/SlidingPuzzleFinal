@@ -1,6 +1,5 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,17 +15,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
+@SuppressWarnings("UnusedParameters")
 public class RegisterActivity extends AppCompatActivity {
-
-    // Class tag
-    private static final String TAG = LoginActivity.class.getSimpleName();
 
     // UI Components
     private EditText emailEditText, passwordEditText, confirmPasswordEditText;
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
 
-    // Session
-    private User user;
     private UserFunctions userFunctions;
 
     @Override
@@ -40,8 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPasswordEditText = (EditText) findViewById(R.id.editTextConfirmRegisterPassword);
 
         // Progress dialog
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
+//        progressDialog = new ProgressDialog(this);
+//        progressDialog.setCancelable(false);
         userFunctions = new UserFunctions();
     }
 
@@ -52,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void registerAccount(View view) {
 
         // Configure user
-        user = new User();
+        User user = new User();
         user.setEmail(emailEditText.getText().toString());
         user.setPassword(passwordEditText.getText().toString());
         String confirmedPass = confirmPasswordEditText.getText().toString();
@@ -146,21 +141,21 @@ public class RegisterActivity extends AppCompatActivity {
 //        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
 //    }
 
-    /**
-     * Shows the progress dialog.
-     */
-    private void showDialog() {
-        if (!progressDialog.isShowing())
-            progressDialog.show();
-    }
-
-    /**
-     * Closes the progress dialog.
-     */
-    private void hideDialog() {
-        if (progressDialog.isShowing())
-            progressDialog.dismiss();
-    }
+//    /**
+//     * Shows the progress dialog.
+//     */
+//    private void showDialog() {
+//        if (!progressDialog.isShowing())
+//            progressDialog.show();
+//    }
+//
+//    /**
+//     * Closes the progress dialog.
+//     */
+//    private void hideDialog() {
+//        if (progressDialog.isShowing())
+//            progressDialog.dismiss();
+//    }
 
     /**
      * Generates a sha512 encoded password.

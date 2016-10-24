@@ -20,9 +20,10 @@ public class ListViewAdapter extends BaseAdapter{
     public static final String MOVES="moves";
     public static final String TIME="TIME";
 
-    public ArrayList<HashMap<String, String>> list;
-    private LayoutInflater layoutInflater;
-    TextView level, email, score, moves, time;
+    private final ArrayList<HashMap<String, String>> list;
+    private final LayoutInflater layoutInflater;
+    private TextView level, email, score, moves;
+    private TextView time;
 
     public ListViewAdapter(LayoutInflater layoutInflater, ArrayList<HashMap<String, String>> list){
         super();
@@ -57,7 +58,7 @@ public class ListViewAdapter extends BaseAdapter{
 
         if(view == null){
 
-            view = layoutInflater.inflate(R.layout.list_view_row, null);
+            view = layoutInflater.inflate(R.layout.list_view_row, parent, false);
 
             level=(TextView) view.findViewById(R.id.levelTV);
             email=(TextView) view.findViewById(R.id.email);

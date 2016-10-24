@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Enter email"
+        android:text="@string/enter_email"
         android:id="@+id/textViewEmail"
         android:textSize="18sp"
         android:layout_alignBaseline="@+id/editTextRegisterEmail"

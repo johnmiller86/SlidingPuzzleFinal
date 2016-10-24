@@ -21,6 +21,9 @@ public class SessionManager {
     private static final String FACEBOOK_ACCESS_TOKEN = "facebookAccessToken";
     private static final String FACEBOOK_IMAGE_URL = "facebookImageURL";
     private static final String PUZZLE_PATH = "puzzle_path";
+    private static final String ROWS = "rows";
+    private static final String COLS = "cols";
+    private static final String UNLOCKED = "unlocked";
 
     // Constructor
     @SuppressLint("CommitPrefEdits")
@@ -31,9 +34,9 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setLoggedIn(boolean isLoggedIn) {
+    public void setLoggedIn() {
 
-        editor.putBoolean(IS_LOGGED_IN, isLoggedIn);
+        editor.putBoolean(IS_LOGGED_IN, true);
         editor.commit();
     }
 
@@ -65,6 +68,30 @@ public class SessionManager {
         return pref.getBoolean(IS_LOGGED_IN, false);
     }
     public String getEmail() { return pref.getString(EMAIL, ""); }
+
+    public void setRows(int rows){
+        editor.putInt(ROWS, rows);
+        editor.commit();
+    }
+    public int getRows(){
+        return pref.getInt(ROWS, 4);
+    }
+    public void setCols(int cols){
+        editor.putInt(COLS, cols);
+        editor.commit();
+    }
+    public int getCols(){
+        return pref.getInt(COLS, 3);
+    }
+
+    public void setUnlocked(int unlocked){
+        editor.putInt(UNLOCKED, unlocked);
+        editor.commit();
+    }
+
+    public int getUnlocked(){
+        return pref.getInt(UNLOCKED, 0);
+    }
 
     public void saveAccessToken(String token) {
         editor.putString(FACEBOOK_ACCESS_TOKEN, token);

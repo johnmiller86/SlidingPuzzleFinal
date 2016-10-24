@@ -20,7 +20,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
- * Class to handle all puzzle DB functions.
+ * Class to handle all puzzleFunctions DB functions.
  * @author John D. Miller.
  * @version 1.0.1
  * @since 09/10/2016

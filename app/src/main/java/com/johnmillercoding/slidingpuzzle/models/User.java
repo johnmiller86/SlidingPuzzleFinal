@@ -3,25 +3,7 @@ package com.johnmillercoding.slidingpuzzle.models;
 public class User {
 
     // Instance vars
-    private int userId;
     private String email, password;
-
-    /**
-     * Gets the user's id.
-     * @return the id.
-     */
-    public int getUserId() {
-
-        return userId;
-    }
-
-    /**
-     * Sets the user's id.
-     * @param userId the id.
-     */
-    public void setUserId(int userId){
-        this.userId = userId;
-    }
 
     /**
      * Gets the user's email.

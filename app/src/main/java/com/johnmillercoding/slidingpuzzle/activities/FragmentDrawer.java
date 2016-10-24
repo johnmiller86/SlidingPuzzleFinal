@@ -33,7 +33,6 @@ public class FragmentDrawer extends Fragment {
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
     private ImageView imageView;
-    private TextView textView;
 
     public FragmentDrawer() {
         // Required default constructor
@@ -106,7 +105,7 @@ public class FragmentDrawer extends Fragment {
             }
         });
 
-        textView = (TextView) layout.findViewById(R.id.emailTextView);
+        TextView textView = (TextView) layout.findViewById(R.id.emailTextView);
         textView.setText(sessionManager.getEmail());
         return layout;
     }

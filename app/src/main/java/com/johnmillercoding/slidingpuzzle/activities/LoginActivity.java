@@ -1,12 +1,10 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,10 +16,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
@@ -36,15 +30,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 
+@SuppressWarnings("UnusedParameters")
 public class LoginActivity extends AppCompatActivity {
-
-    // Class tag
-    private static final String TAG = LoginActivity.class.getSimpleName();
 
     // UI Components
     private EditText emailEditText, passwordEditText;
-    private Button loginButton, registerButton;
-    private LoginButton facebookLoginButton;
 
     // Session
     private SessionManager sessionManager;
@@ -52,11 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     private User user;
     private UserFunctions userFunctions;
 //    private DBHelper dbHelper;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         // Linking UI Components
         emailEditText = (EditText) findViewById(R.id.editTextEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
-        loginButton = (Button) findViewById(R.id.button_login);
-        registerButton = (Button) findViewById(R.id.button_register);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     // Login button Click Event
@@ -105,8 +85,6 @@ public class LoginActivity extends AppCompatActivity {
 
             // Encode password before sending
             user.setPassword(getSha512SecurePassword(user.getPassword()));
-
-//            loginUser(user.getEmail(), user.getPassword());
             userFunctions.loginUser(this, sessionManager, user);
         }
         // Empty EditTexts
@@ -130,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
         // Listener for FacebookLoginButton
-        facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
+        LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
@@ -158,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 Log.v("LoginActivity", response.toString());
 
-                                // Email recieved, proceed
+                                // Email received, proceed
                                 try {
                                     // Configuring User
                                     user = new User();
@@ -167,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     // Configure session
                                     sessionManager.saveAccessToken(loginResult.getAccessToken().getToken());
-                                    sessionManager.setLoggedIn(true);
+                                    sessionManager.setLoggedIn();
                                     sessionManager.setEmail(user.getEmail());
                                     sessionManager.setFacebookImageUrl("https://graph.facebook.com/" + loginResult.getAccessToken().getUserId() + "/picture?type=large");
 
@@ -179,12 +157,12 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } catch (JSONException e) {
-                                    Toast.makeText(LoginActivity.this, "Therre was an error with Facebook!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "There was an error with Facebook!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday");
+                parameters.putString("fields", "id, name, email, gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -321,42 +299,6 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return generatedPassword;
-    }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Login Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
     }
 }
 

@@ -81,7 +81,7 @@
         android:text="@string/enter_email"
         android:id="@+id/textViewEmail"
         android:textSize="18sp"
-        android:labelFor="@+id/editTextRegisterE"
+        android:labelFor="@+id/editTextRegisterEmail"
         android:background="@drawable/gradient"
         android:layout_above="@+id/editTextRegisterPassword"
         android:layout_toStartOf="@+id/editTextConfirmRegisterPassword"

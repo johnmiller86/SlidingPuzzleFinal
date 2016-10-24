@@ -22,7 +22,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 
 /**
- * Class to handle all puzzle DB functions.
+ * Class to handle all puzzleFunctions DB functions.
  * @author John D. Miller.
  * @version 1.0.1
  * @since 09/10/2016
@@ -127,8 +127,8 @@ public class SettingFunctions {
 //                        numberPickerCols.setValue(settings.getColumns());
 //                        numberPickerRows.setValue(settings.getRows());
 //                        if(sessionManager.getPuzzlePath() != null) {
-//                            Puzzle puzzle = new Puzzle();
-//                            imageView.setImageBitmap(puzzle.getPuzzle(context, settings));
+//                            PuzzleFunctions puzzleFunctions = new PuzzleFunctions();
+//                            imageView.setImageBitmap(puzzleFunctions.getPuzzle(context, settings));
 //                        }
 //
 //                    } else {

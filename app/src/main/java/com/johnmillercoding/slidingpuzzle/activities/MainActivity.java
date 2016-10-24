@@ -13,29 +13,26 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.johnmillercoding.slidingpuzzle.R;
-import com.johnmillercoding.slidingpuzzle.models.LeaderboardEntry;
-import com.johnmillercoding.slidingpuzzle.models.Puzzle;
 import com.johnmillercoding.slidingpuzzle.models.Settings;
-import com.johnmillercoding.slidingpuzzle.models.User;
 import com.johnmillercoding.slidingpuzzle.utilities.LeaderboardFunctions;
+import com.johnmillercoding.slidingpuzzle.utilities.LevelFunctions;
+import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.SettingFunctions;
-import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
-
-import java.util.ArrayList;
 
 @SuppressLint("CommitTransaction")
 public class MainActivity extends FragmentActivity implements FragmentDrawer.FragmentDrawerListener {
 
     // Session
     public static SessionManager sessionManager;
-    public static UserFunctions userFunctions;
-    public static User user;
+    // --Commented out by Inspection (10/23/2016 1:26 AM):public static UserFunctions userFunctions;
+    // --Commented out by Inspection (10/23/2016 1:26 AM):public static User user;
     public static SettingFunctions settingFunctions;
     public static Settings settings;
-    public static Puzzle puzzle;
+    public static PuzzleFunctions puzzleFunctions;
     public static LeaderboardFunctions leaderboardFunctions;
-    public static ArrayList<LeaderboardEntry> leaderboards;
+    public static LevelFunctions levelFunctions;
+    // --Commented out by Inspection (10/23/2016 1:26 AM):public static ArrayList<LeaderboardEntry> leaderboards;
 
     // Fragment
     private FragmentTransaction fragmentTransaction;
@@ -56,12 +53,14 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
 
         // Instantiating Session
         sessionManager = new SessionManager(getApplicationContext());
-        userFunctions = new UserFunctions();
+//        userFunctions = new UserFunctions();
 //        user = userFunctions.getUser(sessionManager.getEmail());
         settingFunctions = new SettingFunctions();
         settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
-        puzzle = new Puzzle();
+        puzzleFunctions = new PuzzleFunctions();
         leaderboardFunctions = new LeaderboardFunctions();
+        levelFunctions = new LevelFunctions();
+        levelFunctions.setOpenLevels();
 //        leaderboards = leaderboardFunctions.getLeaderboards(this);
 
         // FragmentDrawer
@@ -131,7 +130,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
                 break;
             // Leaderboards
             case 3:
-                if (fragment instanceof  LeaderboardFragment == false) {
+                if (!(fragment instanceof LeaderboardFragment)) {
                     fragment = new LeaderboardFragment();
                     current = false;
                 }

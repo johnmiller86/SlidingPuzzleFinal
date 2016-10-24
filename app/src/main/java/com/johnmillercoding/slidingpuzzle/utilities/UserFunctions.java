@@ -46,7 +46,7 @@ public class UserFunctions {
                     if (!error) {
 
                         // Create login session
-                        sessionManager.setLoggedIn(true);
+                        sessionManager.setLoggedIn();
 
                         // Set info
                         sessionManager.setEmail(user.getEmail());

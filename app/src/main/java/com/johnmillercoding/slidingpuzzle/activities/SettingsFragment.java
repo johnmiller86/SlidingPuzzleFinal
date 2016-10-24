@@ -21,11 +21,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 
 import com.johnmillercoding.slidingpuzzle.R;
 
 import static android.app.Activity.RESULT_OK;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.puzzle;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.puzzleFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settingFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
@@ -42,9 +43,10 @@ public class SettingsFragment extends Fragment {
     // UI components
     private View view;
     private ImageView imageView;
+    private Button rowsButton, colsButton;
 
     // NumberPicker changed flag
-    private boolean changed = false;
+//    private boolean changed = false;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -71,20 +73,19 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (changed){
-            settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
-        }
+//        if (changed){
+//            settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+//        }
     }
 
     private void initialize() {
 
-//        puzzle = new Puzzle();  // TODO Change this
 
         // UI components
-        NumberPicker numberPickerRows = (NumberPicker) view.findViewById(R.id.numberPickerRows);
-        NumberPicker numberPickerCols = (NumberPicker) view.findViewById(R.id.numberPickerCols);
+//        final NumberPicker numberPickerRows = (NumberPicker) view.findViewById(R.id.numberPickerRows);
+//        NumberPicker numberPickerCols = (NumberPicker) view.findViewById(R.id.numberPickerCols);
         imageView = (ImageView) view.findViewById(R.id.imageView);
-        imageView.setImageBitmap(puzzle.getPuzzle(getActivity().getBaseContext()));
+        imageView.setImageBitmap(puzzleFunctions.getPuzzle(getActivity().getBaseContext()));
         Button imagePicker = (Button) view.findViewById(R.id.button_pick_puzzle);
         imagePicker.setOnClickListener(new View.OnClickListener(){
 
@@ -93,31 +94,75 @@ public class SettingsFragment extends Fragment {
                 chooseImage();
             }
         });
-
-        numberPickerCols.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        rowsButton = (Button) view.findViewById(R.id.button_pick_rows);
+        colsButton = (Button) view.findViewById(R.id.button_pick_columns);
+        rowsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
-                settings.setColumns(i2);
-                changed = true;
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            public void onClick(View view) {
+                showNumberPicker("rows");
             }
         });
-
-        numberPickerRows.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        colsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
-                settings.setRows(i2);
-                changed = true;
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            public void onClick(View view) {
+                showNumberPicker("columns");
             }
         });
+        rowsButton.setText(String.valueOf(sessionManager.getRows()));
+        colsButton.setText(String.valueOf(sessionManager.getCols()));
+//
+//        numberPickerCols.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+//            @Override
+//            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
+//                settings.setColumns(i2);
+//                changed = true;
+//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//                Toast.makeText(getActivity(), "Fuck", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        numberPickerRows.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+//            @Override
+//            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
+//                settings.setRows(i2);
+//                changed = true;
+//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//                Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
+//            }
+//        });
 
-        numberPickerCols.setMaxValue(8);
-        numberPickerRows.setMaxValue(8);
-        numberPickerCols.setMinValue(2);
-        numberPickerRows.setMinValue(2);
-        numberPickerCols.setValue(settings.getColumns());
-        numberPickerRows.setValue(settings.getRows());
+//        numberPickerCols.setOnScrollListener(new NumberPicker.OnScrollListener() {
+//
+//             @Override
+//             public void onScrollStateChange(NumberPicker numberPicker, int i) {
+//                 settings.setRows(i);
+//                 changed = true;
+//                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//                 Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
+//             }
+//         });
+//        numberPickerCols.setOnScrollListener(new MyNumberPickerScrollListener(settings.getColumns()));
+//
+//        numberPickerRows.setOnScrollListener(new NumberPicker.OnScrollListener() {
+//
+//            @Override
+//            public void onScrollStateChange(NumberPicker numberPicker, int i) {
+//                if (i == SCROLL_STATE_IDLE) {
+//                    settings.setRows(numberPickerRows.getValue());
+//                    changed = true;
+//                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//                    Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+////        numberPickerCols.set
+//
+//        numberPickerCols.setMaxValue(8);
+//        numberPickerRows.setMaxValue(8);
+//        numberPickerCols.setMinValue(2);
+//        numberPickerRows.setMinValue(2);
+//        numberPickerCols.setValue(settings.getColumns());
+//        numberPickerRows.setValue(settings.getRows());
     }
 
     /**
@@ -163,7 +208,7 @@ public class SettingsFragment extends Fragment {
                 sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
 
                 // Update ImageView
-                Bitmap bitmap = puzzle.getPuzzle(getContext());
+                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
                 imageView.setImageBitmap(bitmap);
 
                 // Update MySQL
@@ -179,7 +224,7 @@ public class SettingsFragment extends Fragment {
                 sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
 
                 // Update ImageView
-                Bitmap bitmap = puzzle.getPuzzle(getContext());
+                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
                 imageView.setImageBitmap(bitmap);
 
                 // Update MySQL
@@ -226,7 +271,7 @@ public class SettingsFragment extends Fragment {
                 else if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
                     new AlertDialog.Builder(getContext())
                             .setTitle("Permission was blocked!")
-                            .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzle, the app needs to " +
+                            .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzleFunctions, the app needs to " +
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
 
                             // Open Settings button
@@ -249,7 +294,7 @@ public class SettingsFragment extends Fragment {
                 else{
                     new AlertDialog.Builder(getContext())
                             .setTitle("Permission was denied!")
-                            .setMessage("You are unable to set a free play puzzle without access to external storage. Would you like to allow access?")
+                            .setMessage("You are unable to set a free play puzzleFunctions without access to external storage. Would you like to allow access?")
 
                             // Open Settings button
                             .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
@@ -280,7 +325,7 @@ public class SettingsFragment extends Fragment {
                 else if(!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
                     new AlertDialog.Builder(getContext())
                             .setTitle("Permission was blocked!")
-                            .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzle, the app needs to " +
+                            .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzleFunctions, the app needs to " +
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
 
                             // Open Settings button
@@ -303,7 +348,7 @@ public class SettingsFragment extends Fragment {
                 else {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Permission was denied!")
-                            .setMessage("You are unable to set a free play puzzle without access to external storage. Would you like to allow access?")
+                            .setMessage("You are unable to set a free play puzzleFunctions without access to external storage. Would you like to allow access?")
 
                             // Open Settings button
                             .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
@@ -334,5 +379,98 @@ public class SettingsFragment extends Fragment {
         intent.setData(uri);
         int REQUEST_PERMISSION = 0;
         startActivityForResult(intent, REQUEST_PERMISSION);
+    }
+
+
+
+
+
+//    public class MyNumberPickerScrollListener implements NumberPicker.OnScrollListener {
+//
+//        private int oldValue;
+//
+//        public MyNumberPickerScrollListener(int initialValue) {
+//            oldValue = initialValue;
+//        }
+//
+//        @Override
+//        public void onScrollStateChange(NumberPicker numberPicker, int scrollState) {
+//            if (scrollState == NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
+//                //We get the different between oldValue and the new value
+//                int valueDiff = numberPicker.getValue() - oldValue;
+//
+//                //Update oldValue to the new value for the next scroll
+//                oldValue = numberPicker.getValue();
+//
+//                //Do action with valueDiff
+//                settings.setRows(oldValue);
+//                changed = true;
+//                Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//    }
+
+    /**
+     * Shows the number picker to change rows or columns.
+     * @param which rows or columns.
+     */
+    private void showNumberPicker(final String which){
+
+        // Lock the orientation to preserve dialog and the async task
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
+        // Create the layout
+        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+        final NumberPicker numberPicker = new NumberPicker(getContext());
+        numberPicker.setMaxValue(8);
+        numberPicker.setMinValue(2);
+        if (which.equals("rows")) {
+            numberPicker.setValue(settings.getRows());
+        }else{
+            numberPicker.setValue(settings.getColumns());
+        }
+        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        relativeLayout.setLayoutParams(params);
+        relativeLayout.addView(numberPicker,layoutParams);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setTitle("Select number of " + which);
+        alertDialogBuilder.setView(relativeLayout);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Ok",
+
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+
+                                if (which.equals("rows")){
+                                    settings.setRows(numberPicker.getValue());
+                                    rowsButton.setText(String.valueOf(settings.getRows()));
+                                    sessionManager.setRows(settings.getRows());
+                                }else{
+                                    settings.setColumns(numberPicker.getValue());
+                                    colsButton.setText(String.valueOf(settings.getColumns()));
+                                    sessionManager.setCols(settings.getColumns());
+                                }
+                                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.cancel();
+                                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

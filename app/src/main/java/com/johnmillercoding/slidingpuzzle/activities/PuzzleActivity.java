@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.LeaderboardEntry;
-import com.johnmillercoding.slidingpuzzle.models.Puzzle;
+import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -55,7 +55,7 @@ public class PuzzleActivity extends AppCompatActivity {
 //    private SettingFunctions settingFunctions;// = new SettingFunctions();
 //    private Settings settings;// = settingFunctions.getSettings(this, sessionManager.getEmail());
 ////    private PuzzleFunctions puzzleFunctions;// = new PuzzleFunctions();
-//    private Puzzle puzzle;// = puzzleFunctions.getPuzzle(user);
+//    private PuzzleFunctions puzzleFunctions;// = puzzleFunctions.getPuzzle(user);
 //    private LeaderboardFunctions leaderboardFunctions;// = new LeaderboardFunctions();
 ////    private final LeaderboardEntry leaderboardEntry = leaderboardFunctions.getLeaderboards(user);
 
@@ -137,9 +137,9 @@ public class PuzzleActivity extends AppCompatActivity {
 //        SettingFunctions settingFunctions = new SettingFunctions();
 //        Settings settings = settingFunctions.getSettings(this.getApplicationContext(), sessionManager.getEmail());
 ////        PuzzleFunctions puzzleFunctions = new PuzzleFunctions();
-////        Puzzle puzzle = puzzleFunctions.getPuzzle(user);
-//        puzzle = new Puzzle();
-////        puzzle.setPuzzlePath(this, settings);
+////        PuzzleFunctions puzzleFunctions = puzzleFunctions.getPuzzle(user);
+//        puzzleFunctions = new PuzzleFunctions();
+////        puzzleFunctions.setPuzzlePath(this, settings);
 ////        leaderboardFunctions = new LeaderboardFunctions();
 ////    private final LeaderboardEntry leaderboardEntry = leaderboardFunctions.getLeaderboards(user);
 
@@ -197,7 +197,7 @@ public class PuzzleActivity extends AppCompatActivity {
         movesCounter = 0;
         isPause = false;
 
-        // Create puzzle
+        // Create puzzleFunctions
         Intent intent = getIntent();
 
         // Campaign
@@ -217,26 +217,26 @@ public class PuzzleActivity extends AppCompatActivity {
             isCampaign = false;
             startTime = 0;
 
-            // Free play puzzle set, but deleted or on another device
+            // Free play puzzleFunctions set, but deleted or on another device
             if (sessionManager.getPuzzlePath() != null && !(new File(sessionManager.getPuzzlePath()).exists())){
                 Toast.makeText(this, "Image deleted or you are on another device!!", Toast.LENGTH_SHORT).show();
                 createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
             }
 
-            // Use the free play puzzle
+            // Use the free play puzzleFunctions
             else if (sessionManager.getPuzzlePath() != null && new File(sessionManager.getPuzzlePath()).exists()){
-                Bitmap bitmap = new Puzzle().getPuzzle(this);
+                Bitmap bitmap = new PuzzleFunctions().getPuzzle(this);
 
                 // User has reinstalled and read permissions not yet enabled
                 if (bitmap == null) {
                     Toast.makeText(this, "You must enable permissions to use your previous free play image!!", Toast.LENGTH_SHORT).show();
                     createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
                 }else{
-                    createPuzzle(new Puzzle().getPuzzle(this));
+                    createPuzzle(new PuzzleFunctions().getPuzzle(this));
                 }
             }
 
-            // Free play puzzle not chosen
+            // Free play puzzleFunctions not chosen
             else {
                 createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
             }
@@ -360,7 +360,7 @@ public class PuzzleActivity extends AppCompatActivity {
     };
 
     /**
-     * Restarts the puzzle.
+     * Restarts the puzzleFunctions.
      */
     private void restart(){
 
@@ -578,7 +578,7 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks if the puzzle has been solved.
+     * Checks if the puzzleFunctions has been solved.
      */
     private boolean isSolved()
     {

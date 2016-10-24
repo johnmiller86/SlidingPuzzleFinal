@@ -15,7 +15,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.johnmillercoding.slidingpuzzle.R;
-import com.johnmillercoding.slidingpuzzle.models.LeaderboardEntry;
 import com.johnmillercoding.slidingpuzzle.models.ListViewAdapter;
 import com.johnmillercoding.slidingpuzzle.utilities.Config;
 import com.johnmillercoding.slidingpuzzle.utilities.VolleyController;
@@ -36,6 +35,7 @@ import static com.johnmillercoding.slidingpuzzle.models.ListViewAdapter.SCORE;
 import static com.johnmillercoding.slidingpuzzle.models.ListViewAdapter.TIME;
 
 
+@SuppressWarnings("EmptyMethod")
 public class LeaderboardFragment extends Fragment {
 
     private View view;
@@ -93,7 +93,7 @@ public class LeaderboardFragment extends Fragment {
     public View getLeaderboards(View view, final Bundle savedInstanceState) {
         String requestString = "get_leaderboards";
 
-        final ArrayList<LeaderboardEntry> leaderboards = new ArrayList<>();
+//        final ArrayList<LeaderboardEntry> leaderboards = new ArrayList<>();
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
 //        progressDialog.setMessage("Retrieving settings...");
 //        progressDialog.show();
