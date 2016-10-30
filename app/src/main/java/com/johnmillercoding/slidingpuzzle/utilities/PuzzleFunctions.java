@@ -16,6 +16,8 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.session
 
 public class PuzzleFunctions {
 
+    // MySQL
+
     /**
      * Decodes and returns a bitmap from filepath.
      * @return the decoded bitmap.

@@ -90,7 +90,7 @@ public class LeaderboardFragment extends Fragment {
     /**
      * Gets the user's settings from MySQL.
      */
-    public View getLeaderboards(View view, final Bundle savedInstanceState) {
+    private View getLeaderboards(View view, final Bundle savedInstanceState) {
         String requestString = "get_leaderboards";
 
 //        final ArrayList<LeaderboardEntry> leaderboards = new ArrayList<>();
@@ -162,9 +162,8 @@ public class LeaderboardFragment extends Fragment {
 
             @Override
             protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<>();
-                return params;
+                // No params for this method, return empty HashMap
+                return new HashMap<>();
             }
         };
 

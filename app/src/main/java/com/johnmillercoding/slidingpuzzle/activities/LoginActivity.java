@@ -1,9 +1,13 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,56 +45,62 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private User user;
     private UserFunctions userFunctions;
-//    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initializeFacebook();
-
-        // Session
-        sessionManager = new SessionManager(getApplicationContext());
-        userFunctions = new UserFunctions();
-
-        // Database Manager
-//        dbHelper = new DBHelper(this.getApplicationContext());
-//        DatabaseManager.initializeInstance(dbHelper);
-
-        // Check if user is already logged in or not
-        if (sessionManager.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
-        // Database Manager
-//        DBHelper dbHelper = new DBHelper(this.getApplicationContext());
-//        DatabaseManager.initializeInstance(dbHelper);
-
+        configureFacebook();
         // Linking UI Components
         emailEditText = (EditText) findViewById(R.id.editTextEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
+
+        // Check network connectivity
+        if (!networkAvailable()){
+            showNoNetworkMenu();
+        }else {
+            // Session
+            sessionManager = new SessionManager(getApplicationContext());
+            userFunctions = new UserFunctions();
+
+            // If user is logged in, continue to the main activity
+            if (sessionManager.isLoggedIn()) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (!networkAvailable()){
+            showNoNetworkMenu();
+        }
     }
 
     // Login button Click Event
     public void Login(View view) {
 
-        user = new User();
-        user.setEmail(emailEditText.getText().toString().trim());
-        user.setPassword(passwordEditText.getText().toString().trim());
+//        if (!networkAvailable()){
+//            Toast.makeText(this, "No network connection!!", Toast.LENGTH_LONG).show();
+//        }else {
+            user = new User();
+            user.setEmail(emailEditText.getText().toString().trim());
+            user.setPassword(passwordEditText.getText().toString().trim());
 
-        // Login user
-        if (!user.getEmail().isEmpty() && !user.getPassword().isEmpty()) {
+            // Login user
+            if (!user.getEmail().isEmpty() && !user.getPassword().isEmpty()) {
 
-            // Encode password before sending
-            user.setPassword(getSha512SecurePassword(user.getPassword()));
-            userFunctions.loginUser(this, sessionManager, user);
-        }
-        // Empty EditTexts
-        else {
-            Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
-        }
+                // Encode password before sending
+                user.setPassword(getSha512SecurePassword(user.getPassword()));
+                userFunctions.loginUser(this, sessionManager, user);
+            }
+            // Empty EditTexts
+            else {
+                Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
+            }
+//        }
     }
 
     // Register button Click Event
@@ -102,12 +112,14 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Configures the Facebook button.
      */
-    private void initializeFacebook() {
+    private void configureFacebook() {
 
+        // Initialize
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        // Listener for FacebookLoginButton
+
+        // Listener
         LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -116,25 +128,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(final LoginResult loginResult) {
 
-                // Get their profile
-//                Profile profile = Profile.getCurrentProfile();
-
-//                // Configuring User
-//                user = new User();
-//                user.setPassword("Not today sir!");
-//                user.setEmail(profile.getName());
-
-                // Inserting
-//                if (!userFunctions.userExists(user)){
-//                    userFunctions.insertUser(user);
-//                }
-                // Requests the user's email address from Facebook
+                // Get the user's profile
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
 
                                 // Email received, proceed
                                 try {
@@ -180,108 +179,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     // Handles results from the FacebookLogin Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-//    /**
-//     * Authenticates against the mysql database.
-//     * @param email the user's email.
-//     * @param password the entered password.
-//     */
-//    private void loginUser(final String email, final String password) {
-//        // Tag used to cancel the request
-//        String tag_string_req = "req_login";
-//
-//        progressDialog.setMessage("Logging in ...");
-//        showDialog();
-//
-//        StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_LOGIN, new Response.Listener<String>() {
-//
-//            @Override
-//            public void onResponse(String response) {
-//                Log.d(TAG, "Login Response: " + response);
-//                hideDialog();
-//
-//                try {
-//                    JSONObject jObj = new JSONObject(response);
-//                    boolean error = jObj.getBoolean("error");
-//
-//                    // Successful login
-//                    if (!error) {
-//
-//                        // Create login session
-//                        sessionManager.setLoggedIn(true);
-//
-//                        // Set info
-//                        sessionManager.getEmail(user.getEmail());
-//
-//                        // Launch main activity
-//                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                    // Login error
-//                    else {
-//                        String errorMsg = jObj.getString("error_msg");
-//                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//                // JSON error
-//                catch (JSONException e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e(TAG, "Login Error: " + error.getMessage());
-//                Toast.makeText(getApplicationContext(),
-//                        error.getMessage(), Toast.LENGTH_LONG).show();
-//                hideDialog();
-//            }
-//        }) {
-//
-//            @Override
-//            protected Map<String, String> getParams() {
-//                // Posting parameters to login url
-//                Map<String, String> params = new HashMap<>();
-//                params.put("email", email);
-//                params.put("password", password);
-//
-//                return params;
-//            }
-//
-//        };
-//
-//        // Adding request to request queue
-//        VolleyController.getInstance().addToRequestQueue(strReq, tag_string_req);
-//    }
-//
-//    /**
-//     * Shows the progress dialog.
-//     */
-//    private void showDialog() {
-//        if (!progressDialog.isShowing())
-//            progressDialog.show();
-//    }
-//
-//    /**
-//     * Closes the progress dialog.
-//     */
-//    private void hideDialog() {
-//        if (progressDialog.isShowing())
-//            progressDialog.dismiss();
-//    }
-//
-
     /**
      * Generates a sha512 encoded password.
-     *
      * @param passwordToHash the password to be hashed.
      * @return the hashed password.
      */
@@ -299,6 +205,56 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return generatedPassword;
+    }
+
+    /**
+     * Checks if the network is available.
+     * @return true or false.
+     */
+    private boolean networkAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+                if (networkInfo.isConnected()) {
+                    // Connected to wifi network
+                    return true;
+                }
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                if (networkInfo.isConnected()) {
+                    // Connected to mobile network
+                    return true;
+                }
+            }
+        }
+        // No connection
+        return false;
+    }
+
+    /**
+     * Shows a menu when no network available.
+     */
+    private void showNoNetworkMenu() {
+        final CharSequence[] charSequences = { "Play Offline", "Exit Game"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Network Connection");
+        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (charSequences[item].equals("Play Offline")) {
+
+                    // Start intent, but leave this activity open to return to
+                    Intent intent = new Intent(LoginActivity.this, PuzzleActivity.class);
+                    intent.putExtra("random", true);
+                    startActivity(intent);
+                }else if (charSequences[item].equals("Exit Game")) {
+                    finish();
+                }
+            }
+        });
+        builder.setCancelable(false);
+        builder.show();
     }
 }
 

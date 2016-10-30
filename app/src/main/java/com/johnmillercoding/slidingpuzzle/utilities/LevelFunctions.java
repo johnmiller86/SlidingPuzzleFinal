@@ -24,6 +24,8 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.session
  */
 public class LevelFunctions {
 
+
+
     /**
      * Saves the user's settings in MySQL.
      */

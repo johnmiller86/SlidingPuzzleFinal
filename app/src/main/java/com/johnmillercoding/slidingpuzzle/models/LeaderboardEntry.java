@@ -2,8 +2,10 @@ package com.johnmillercoding.slidingpuzzle.models;
 
 public class LeaderboardEntry {
 
+    // Instance vars
     private int level_num, moves, score;
     private String time, email;
+
 
     public String getEmail() {
         return email;

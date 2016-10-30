@@ -48,18 +48,32 @@
     <string name="allow">Allow</string>
     <string name="free_play">Free Play</string>
     <string name="campaign">Campaign</string>
-
-    <!-- Facebook stuff -->
     <string name="facebook_app_id">1281809765224669</string>
-    <string name="action_show_access_token_title">Print Access Token</string>
-    <string name="title_activity_access_token">AccessTokenActivity</string>
-    <string name="title_activity_show_access_token">ShowAccessTokenActivity</string>
-    <string name="profile_pic">Facebook Profile Picture</string>
-    <string name="don_apos_t_have_an_account">Don\'t have an account?</string>
-    <string name="crawl_name">Crawl Name</string>
-    <string name="crawl_date">Crawl Date</string>
-    <string name="continue_button">Continue</string>
-    <string name="bar_crawl">Bar Crawl</string>
-    <string name="select_date">Select Date</string>
-    <string name="save">Save</string>
+    <string name="pick_rows">Pick Rows</string>
+    <string name="pick_columns">Pick Columns</string>
+    <string name="level_1">Level 1</string>
+    <string name="level_2">Level 2</string>
+    <string name="level_3">Level 3</string>
+    <string name="level_4">Level 4</string>
+    <string name="level_5">Level 5</string>
+    <string name="level_6">Level 6</string>
+    <string name="level_7">Level 7</string>
+    <string name="level_8">Level 8</string>
+    <string name="level_9">Level 9</string>
+    <string name="level_10">Level 10</string>
+    <string name="level_11">Level 11</string>
+    <string name="level_12">Level 12</string>
+    <string name="level_13">Level 13</string>
+    <string name="level_14">Level 14</string>
+    <string name="level_15">Level 15</string>
+    <string name="level_16">Level 16</string>
+    <string name="level_17">Level 17</string>
+    <string name="level_18">Level 18</string>
+    <string name="level_19">Level 19</string>
+    <string name="level_20">Level 20</string>
+    <string name="level">Level</string>
+    <string name="email">Email</string>
+    <string name="score">Score</string>
+    <string name="moves">Moves</string>
+    <string name="time">Time</string>
 </resources>

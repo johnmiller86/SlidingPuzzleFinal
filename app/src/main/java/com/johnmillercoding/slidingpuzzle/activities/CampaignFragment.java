@@ -28,12 +28,7 @@ public class CampaignFragment extends Fragment {
 
     // UI Components
     private View view;
-//    private List<RelativeLayout> relativeLayouts;
-    private List<ImageButton> imageButtons;
-    private ImageButton imageButton1, imageButton2, imageButton3, imageButton4, imageButton5, imageButton6, imageButton7, imageButton8, imageButton9,
-    imageButton10, imageButton11, imageButton12, imageButton13, imageButton14, imageButton15, imageButton16, imageButton17, imageButton18, imageButton19, imageButton20;
-//    private int width, height;
-    private int checkmark, lock, glass;
+    // --Commented out by Inspection (10/30/2016 2:28 AM):private int glass;
     private ArrayList<int[]> rowCols;
 
     public CampaignFragment() {
@@ -71,33 +66,33 @@ public class CampaignFragment extends Fragment {
     private void initialize() {
 
         // Foreground image resource ids
-        checkmark = getResources().getIdentifier("checkmark_thumb", "drawable", getActivity().getPackageName());
-        lock = getResources().getIdentifier("lock_thumb", "drawable", getActivity().getPackageName());
+        int checkmark = getResources().getIdentifier("checkmark_thumb", "drawable", getActivity().getPackageName());
+        int lock = getResources().getIdentifier("lock_thumb", "drawable", getActivity().getPackageName());
 
         // Referencing
-        imageButton1 = (ImageButton) view.findViewById(R.id.level_1);
-        imageButton2 = (ImageButton) view.findViewById(R.id.level_2);
-        imageButton3 = (ImageButton) view.findViewById(R.id.level_3);
-        imageButton4 = (ImageButton) view.findViewById(R.id.level_4);
-        imageButton5 = (ImageButton) view.findViewById(R.id.level_5);
-        imageButton6 = (ImageButton) view.findViewById(R.id.level_6);
-        imageButton7 = (ImageButton) view.findViewById(R.id.level_7);
-        imageButton8 = (ImageButton) view.findViewById(R.id.level_8);
-        imageButton9 = (ImageButton) view.findViewById(R.id.level_9);
-        imageButton10 = (ImageButton) view.findViewById(R.id.level_10);
-        imageButton11 = (ImageButton) view.findViewById(R.id.level_11);
-        imageButton12 = (ImageButton) view.findViewById(R.id.level_12);
-        imageButton13 = (ImageButton) view.findViewById(R.id.level_13);
-        imageButton14 = (ImageButton) view.findViewById(R.id.level_14);
-        imageButton15 = (ImageButton) view.findViewById(R.id.level_15);
-        imageButton16 = (ImageButton) view.findViewById(R.id.level_16);
-        imageButton17 = (ImageButton) view.findViewById(R.id.level_17);
-        imageButton18 = (ImageButton) view.findViewById(R.id.level_18);
-        imageButton19 = (ImageButton) view.findViewById(R.id.level_19);
-        imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
+        ImageButton imageButton1 = (ImageButton) view.findViewById(R.id.level_1);
+        ImageButton imageButton2 = (ImageButton) view.findViewById(R.id.level_2);
+        ImageButton imageButton3 = (ImageButton) view.findViewById(R.id.level_3);
+        ImageButton imageButton4 = (ImageButton) view.findViewById(R.id.level_4);
+        ImageButton imageButton5 = (ImageButton) view.findViewById(R.id.level_5);
+        ImageButton imageButton6 = (ImageButton) view.findViewById(R.id.level_6);
+        ImageButton imageButton7 = (ImageButton) view.findViewById(R.id.level_7);
+        ImageButton imageButton8 = (ImageButton) view.findViewById(R.id.level_8);
+        ImageButton imageButton9 = (ImageButton) view.findViewById(R.id.level_9);
+        ImageButton imageButton10 = (ImageButton) view.findViewById(R.id.level_10);
+        ImageButton imageButton11 = (ImageButton) view.findViewById(R.id.level_11);
+        ImageButton imageButton12 = (ImageButton) view.findViewById(R.id.level_12);
+        ImageButton imageButton13 = (ImageButton) view.findViewById(R.id.level_13);
+        ImageButton imageButton14 = (ImageButton) view.findViewById(R.id.level_14);
+        ImageButton imageButton15 = (ImageButton) view.findViewById(R.id.level_15);
+        ImageButton imageButton16 = (ImageButton) view.findViewById(R.id.level_16);
+        ImageButton imageButton17 = (ImageButton) view.findViewById(R.id.level_17);
+        ImageButton imageButton18 = (ImageButton) view.findViewById(R.id.level_18);
+        ImageButton imageButton19 = (ImageButton) view.findViewById(R.id.level_19);
+        ImageButton imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
 
         // Adding to list
-        imageButtons = new ArrayList<>();
+        List<ImageButton> imageButtons = new ArrayList<>();
         imageButtons.add(imageButton1);
         imageButtons.add(imageButton2);
         imageButtons.add(imageButton3);
@@ -134,7 +129,7 @@ public class CampaignFragment extends Fragment {
                 Glide.with(this)
                         .load(lock)
                         .into(imageButtons.get(i));
-//                imageButtons.get(i).setEnabled(false);
+                imageButtons.get(i).setEnabled(false);
             }
         }
     }
@@ -154,7 +149,7 @@ public class CampaignFragment extends Fragment {
 
             campaign.putExtra(PUZZLE_MODE_TAG, resName);
             campaign.putExtra(PUZZLE_TIMER_TAG, 10 * levelNum);
-            campaign.putExtra(PUZZLE_LEVEL_TAG, view.getId());
+            campaign.putExtra(PUZZLE_LEVEL_TAG, levelNum);
             campaign.putExtra(PUZZLE_COL_TAG, rowCols.get(levelNum - 1)[0]);
             campaign.putExtra(PUZZLE_ROW_TAG, rowCols.get(levelNum - 1)[1]);
             startActivityForResult(campaign, 0);

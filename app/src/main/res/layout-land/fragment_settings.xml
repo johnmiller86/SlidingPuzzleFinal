@@ -13,8 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button_pick_puzzle">
+            android:layout_height="match_parent">
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -76,7 +75,7 @@
                     android:id="@+id/button_pick_rows"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pick Rows"
+                    android:text="@string/pick_rows"
                     android:background="@drawable/button"
                     android:layout_margin="20dp"
                     android:layout_weight="1"/>
@@ -84,7 +83,7 @@
                     android:id="@+id/button_pick_columns"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pick Columns"
+                    android:text="@string/pick_columns"
                     android:background="@drawable/button"
                     android:layout_margin="20dp"
                     android:layout_weight="1"/>
@@ -97,9 +96,7 @@
                     android:id="@+id/button_pick_puzzle"
                     android:background="@drawable/button"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_marginRight="20dp"/>
             </TableRow>
         </TableLayout>
         </LinearLayout>

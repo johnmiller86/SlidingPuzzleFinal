@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Level"
+            android:text="@string/level"
             android:textAlignment="center"
             android:textSize="18sp"/>
 
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Email"
+            android:text="@string/email"
             android:textAlignment="center"
             android:textSize="18sp"/>
 
@@ -37,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Score"
+            android:text="@string/score"
             android:textAlignment="center"
             android:textSize="18sp"/>
 
@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Moves"
+            android:text="@string/moves"
             android:textAlignment="center"
             android:textSize="18sp"/>
 
@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Time"
+            android:text="@string/time"
             android:textAlignment="center"
             android:textSize="18sp"/>
     </LinearLayout>

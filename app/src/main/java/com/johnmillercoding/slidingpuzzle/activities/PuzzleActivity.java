@@ -131,19 +131,6 @@ public class PuzzleActivity extends AppCompatActivity {
      */
     private void initializeReferences() {
 
-//        // Initializing Session
-//        UserFunctions userFunctions = new UserFunctions();
-//        User user = userFunctions.getUser(sessionManager.getEmail());
-//        SettingFunctions settingFunctions = new SettingFunctions();
-//        Settings settings = settingFunctions.getSettings(this.getApplicationContext(), sessionManager.getEmail());
-////        PuzzleFunctions puzzleFunctions = new PuzzleFunctions();
-////        PuzzleFunctions puzzleFunctions = puzzleFunctions.getPuzzle(user);
-//        puzzleFunctions = new PuzzleFunctions();
-////        puzzleFunctions.setPuzzlePath(this, settings);
-////        leaderboardFunctions = new LeaderboardFunctions();
-////    private final LeaderboardEntry leaderboardEntry = leaderboardFunctions.getLeaderboards(user);
-
-
         // Initializing Layout
         tableLayout = (TableLayout) findViewById(R.id.table_layout);
 
@@ -161,7 +148,11 @@ public class PuzzleActivity extends AppCompatActivity {
             cols = getIntent().getIntExtra(PUZZLE_COL_TAG, 3);
         }
         // Free play use user settings if available
-        else{
+        else if (getIntent().getBooleanExtra("random", false)) {
+
+            rows = 4;
+            cols = 3;
+        }else{
             rows = settings.getRows();
             cols = settings.getColumns();
         }
@@ -213,32 +204,41 @@ public class PuzzleActivity extends AppCompatActivity {
             createPuzzle(bitmap);
         }
         // Free play
-        else{
+        else {
             isCampaign = false;
             startTime = 0;
 
-            // Free play puzzleFunctions set, but deleted or on another device
-            if (sessionManager.getPuzzlePath() != null && !(new File(sessionManager.getPuzzlePath()).exists())){
-                Toast.makeText(this, "Image deleted or you are on another device!!", Toast.LENGTH_SHORT).show();
-                createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
+            // No network use a random puzzle
+            if (intent.getBooleanExtra("random", false)) {
+                createPuzzle(BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(randomLevel(), "drawable", getPackageName())));
             }
 
-            // Use the free play puzzleFunctions
-            else if (sessionManager.getPuzzlePath() != null && new File(sessionManager.getPuzzlePath()).exists()){
-                Bitmap bitmap = new PuzzleFunctions().getPuzzle(this);
-
-                // User has reinstalled and read permissions not yet enabled
-                if (bitmap == null) {
-                    Toast.makeText(this, "You must enable permissions to use your previous free play image!!", Toast.LENGTH_SHORT).show();
-                    createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
-                }else{
-                    createPuzzle(new PuzzleFunctions().getPuzzle(this));
-                }
-            }
-
-            // Free play puzzleFunctions not chosen
+            // Use free play settings
             else {
-                createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
+
+                // Free play puzzleFunctions set, but deleted or on another device
+                if (sessionManager.getPuzzlePath() != null && !(new File(sessionManager.getPuzzlePath()).exists())) {
+                    Toast.makeText(this, "Image deleted or you are on another device!!", Toast.LENGTH_SHORT).show();
+                    createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
+                }
+
+                // Use the free play puzzleFunctions
+                else if (sessionManager.getPuzzlePath() != null && new File(sessionManager.getPuzzlePath()).exists()) {
+                    Bitmap bitmap = new PuzzleFunctions().getPuzzle(this);
+
+                    // User has reinstalled and read permissions not yet enabled
+                    if (bitmap == null) {
+                        Toast.makeText(this, "You must enable permissions to use your previous free play image!!", Toast.LENGTH_SHORT).show();
+                        createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
+                    } else {
+                        createPuzzle(new PuzzleFunctions().getPuzzle(this));
+                    }
+                }
+
+                // Free play puzzleFunctions not chosen
+                else {
+                    createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
+                }
             }
         }
     }
@@ -441,8 +441,10 @@ public class PuzzleActivity extends AppCompatActivity {
 
             if (isCampaign){
                 score = ((startTime - currentTime) * 10000) / movesCounter;
-                Toast.makeText(this, "Congratulations You Scored " + score + " points!!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Congratulations, You Scored " + score + " points!!!", Toast.LENGTH_LONG).show();
                 recordHighScores();
+            }else{
+                Toast.makeText(this, "Congratulations, You Win!!!", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -601,4 +603,14 @@ public class PuzzleActivity extends AppCompatActivity {
         leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
 //        leaderboardFunctions.insert(user, leaderboardEntry);
     }
+
+    /**
+    * Getting random level via resource id string *TESTING*
+    * @return a random resource string.
+    */
+    private String randomLevel(){
+        int level = (int) (Math.random() * 20) + 1;
+        return "level_" + level;
+    }
+
 }

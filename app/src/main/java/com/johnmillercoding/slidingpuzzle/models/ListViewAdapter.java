@@ -20,11 +20,13 @@ public class ListViewAdapter extends BaseAdapter{
     public static final String MOVES="moves";
     public static final String TIME="TIME";
 
+    // Instance vars
     private final ArrayList<HashMap<String, String>> list;
     private final LayoutInflater layoutInflater;
     private TextView level, email, score, moves;
     private TextView time;
 
+    // Constructor
     public ListViewAdapter(LayoutInflater layoutInflater, ArrayList<HashMap<String, String>> list){
         super();
         this.list=list;
@@ -54,8 +56,6 @@ public class ListViewAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
-//        LayoutInflater inflater = MainActivity.fragment.getLayoutInflater(null);
-
         if(view == null){
 
             view = layoutInflater.inflate(R.layout.list_view_row, parent, false);
@@ -77,5 +77,4 @@ public class ListViewAdapter extends BaseAdapter{
 
         return view;
     }
-
 }
