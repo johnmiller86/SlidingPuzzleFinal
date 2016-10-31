@@ -3,6 +3,7 @@ package com.johnmillercoding.slidingpuzzle.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
+import com.johnmillercoding.slidingpuzzle.utilities.NetworkStateReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
 
@@ -35,7 +37,7 @@ import java.util.Arrays;
 
 
 @SuppressWarnings("UnusedParameters")
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
     // UI Components
     private EditText emailEditText, passwordEditText;
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private User user;
     private UserFunctions userFunctions;
+    private NetworkStateReceiver networkStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +58,15 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
 
         // Check network connectivity
-        if (!networkAvailable()){
-            showNoNetworkMenu();
-        }else {
+//        if (!networkAvailable()){
+//            showNoNetworkMenu();
+//        }else {
+
+        // Network stuff
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
             // Session
             sessionManager = new SessionManager(getApplicationContext());
             userFunctions = new UserFunctions();
@@ -68,15 +77,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }
+//        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if (!networkAvailable()){
-            showNoNetworkMenu();
-        }
+//        if (!networkAvailable()){
+//            showNoNetworkMenu();
+//        }
     }
 
     // Login button Click Event
@@ -211,26 +220,26 @@ public class LoginActivity extends AppCompatActivity {
      * Checks if the network is available.
      * @return true or false.
      */
-    private boolean networkAvailable() {
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null) {
-            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
-                if (networkInfo.isConnected()) {
-                    // Connected to wifi network
-                    return true;
-                }
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                if (networkInfo.isConnected()) {
-                    // Connected to mobile network
-                    return true;
-                }
-            }
-        }
-        // No connection
-        return false;
-    }
+//    private boolean networkAvailable() {
+//
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+//        if (networkInfo != null) {
+//            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+//                if (networkInfo.isConnected()) {
+//                    // Connected to wifi network
+//                    return true;
+//                }
+//            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+//                if (networkInfo.isConnected()) {
+//                    // Connected to mobile network
+//                    return true;
+//                }
+//            }
+//        }
+//        // No connection
+//        return false;
+//    }
 
     /**
      * Shows a menu when no network available.
@@ -255,6 +264,17 @@ public class LoginActivity extends AppCompatActivity {
         });
         builder.setCancelable(false);
         builder.show();
+    }
+
+    @Override
+    public void networkAvailable() {
+        Toast.makeText(this, "No network!!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(this, "No network!!", Toast.LENGTH_LONG).show();
+        showNoNetworkMenu();
     }
 }
 
