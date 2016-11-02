@@ -1,11 +1,9 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +21,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
-import com.johnmillercoding.slidingpuzzle.utilities.NetworkStateReceiver;
+import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
 
@@ -37,17 +35,19 @@ import java.util.Arrays;
 
 
 @SuppressWarnings("UnusedParameters")
-public class LoginActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
+public class LoginActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener {
 
     // UI Components
     private EditText emailEditText, passwordEditText;
+    private AlertDialog alertDialog;
 
     // Session
     private SessionManager sessionManager;
     private CallbackManager callbackManager;
     private User user;
     private UserFunctions userFunctions;
-    private NetworkStateReceiver networkStateReceiver;
+    private NetworkReceiver networkReceiver;
+    private boolean isShowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +57,17 @@ public class LoginActivity extends AppCompatActivity implements NetworkStateRece
         emailEditText = (EditText) findViewById(R.id.editTextEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
 
+        isShowing = true;
+
         // Check network connectivity
 //        if (!networkAvailable()){
 //            showNoNetworkMenu();
 //        }else {
 
         // Network stuff
-        networkStateReceiver = new NetworkStateReceiver();
-        networkStateReceiver.addListener(this);
-        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+        networkReceiver = new NetworkReceiver();
+        networkReceiver.addListener(this);
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
             // Session
             sessionManager = new SessionManager(getApplicationContext());
@@ -86,6 +88,13 @@ public class LoginActivity extends AppCompatActivity implements NetworkStateRece
 //        if (!networkAvailable()){
 //            showNoNetworkMenu();
 //        }
+        isShowing = true;
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        isShowing = false;
     }
 
     // Login button Click Event
@@ -263,18 +272,26 @@ public class LoginActivity extends AppCompatActivity implements NetworkStateRece
             }
         });
         builder.setCancelable(false);
-        builder.show();
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
     public void networkAvailable() {
-        Toast.makeText(this, "No network!!", Toast.LENGTH_LONG).show();
+        if (isShowing) {
+            Toast.makeText(this, "Connection established!!", Toast.LENGTH_LONG).show();
+            if (alertDialog != null && alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        }
     }
 
     @Override
     public void networkUnavailable() {
-        Toast.makeText(this, "No network!!", Toast.LENGTH_LONG).show();
-        showNoNetworkMenu();
+        if (isShowing) {
+            Toast.makeText(this, "Connection lost!!", Toast.LENGTH_LONG).show();
+            showNoNetworkMenu();
+        }
     }
 }
 
