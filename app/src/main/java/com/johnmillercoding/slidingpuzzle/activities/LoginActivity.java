@@ -28,9 +28,6 @@ import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 
@@ -46,25 +43,24 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     private CallbackManager callbackManager;
     private User user;
     private UserFunctions userFunctions;
+
+    // Network
     private NetworkReceiver networkReceiver;
-    private boolean isShowing;
+    private boolean isInFocus, connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Facebook first
         configureFacebook();
+
         // Linking UI Components
         emailEditText = (EditText) findViewById(R.id.editTextEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
 
-        isShowing = true;
-
-        // Check network connectivity
-//        if (!networkAvailable()){
-//            showNoNetworkMenu();
-//        }else {
-
         // Network stuff
+        isInFocus = true;
         networkReceiver = new NetworkReceiver();
         networkReceiver.addListener(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -74,51 +70,40 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
             userFunctions = new UserFunctions();
 
             // If user is logged in, continue to the main activity
-            if (sessionManager.isLoggedIn()) {
+            if (sessionManager.isLoggedIn() && connected) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
-//        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-//        if (!networkAvailable()){
-//            showNoNetworkMenu();
-//        }
-        isShowing = true;
+        isInFocus = true;
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        isShowing = false;
+        isInFocus = false;
     }
 
     // Login button Click Event
     public void Login(View view) {
 
-//        if (!networkAvailable()){
-//            Toast.makeText(this, "No network connection!!", Toast.LENGTH_LONG).show();
-//        }else {
-            user = new User();
-            user.setEmail(emailEditText.getText().toString().trim());
-            user.setPassword(passwordEditText.getText().toString().trim());
+        user = new User();
+        user.setEmail(emailEditText.getText().toString().trim());
+        user.setPassword(passwordEditText.getText().toString().trim());
 
-            // Login user
-            if (!user.getEmail().isEmpty() && !user.getPassword().isEmpty()) {
-
-                // Encode password before sending
-                user.setPassword(getSha512SecurePassword(user.getPassword()));
-                userFunctions.loginUser(this, sessionManager, user);
-            }
-            // Empty EditTexts
-            else {
-                Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
-            }
-//        }
+        // Login user
+        if (!user.getEmail().isEmpty() && !user.getPassword().isEmpty()) {
+            userFunctions.loginUser(this, sessionManager, user);
+        }
+        // Empty EditTexts
+        else {
+            Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
+        }
     }
 
     // Register button Click Event
@@ -165,8 +150,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
                                     sessionManager.setLoggedIn();
                                     sessionManager.setEmail(user.getEmail());
                                     sessionManager.setFacebookImageUrl("https://graph.facebook.com/" + loginResult.getAccessToken().getUserId() + "/picture?type=large");
-
-                                    // Insert if new user  TODO handle in PHP
                                     userFunctions.registerUser(LoginActivity.this, user, true);
 
                                     // Proceed
@@ -178,6 +161,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
                                 }
                             }
                         });
+                // Necessary Facebook params
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id, name, email, gender, birthday");
                 request.setParameters(parameters);
@@ -197,58 +181,40 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         });
     }
 
-
     // Handles results from the FacebookLogin Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Generates a sha512 encoded password.
-     * @param passwordToHash the password to be hashed.
-     * @return the hashed password.
-     */
-    private String getSha512SecurePassword(String passwordToHash) {
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
+
+    @Override
+    public void networkAvailable() {
+        if (isInFocus) {
+
+            connected = true;
+
+            // Dismiss AlertDialog
+            if (alertDialog != null && alertDialog.isShowing()) {
+                alertDialog.dismiss();
             }
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+
+            // Return to main menu
+            if (sessionManager.isLoggedIn()){
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
-        return generatedPassword;
     }
 
-    /**
-     * Checks if the network is available.
-     * @return true or false.
-     */
-//    private boolean networkAvailable() {
-//
-//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-//        if (networkInfo != null) {
-//            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
-//                if (networkInfo.isConnected()) {
-//                    // Connected to wifi network
-//                    return true;
-//                }
-//            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-//                if (networkInfo.isConnected()) {
-//                    // Connected to mobile network
-//                    return true;
-//                }
-//            }
-//        }
-//        // No connection
-//        return false;
-//    }
+    @Override
+    public void networkUnavailable() {
+        if (isInFocus) {
+            showNoNetworkMenu();
+        }
+        connected = false;
+    }
 
     /**
      * Shows a menu when no network available.
@@ -274,24 +240,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         builder.setCancelable(false);
         alertDialog = builder.create();
         alertDialog.show();
-    }
-
-    @Override
-    public void networkAvailable() {
-        if (isShowing) {
-            Toast.makeText(this, "Connection established!!", Toast.LENGTH_LONG).show();
-            if (alertDialog != null && alertDialog.isShowing()) {
-                alertDialog.dismiss();
-            }
-        }
-    }
-
-    @Override
-    public void networkUnavailable() {
-        if (isShowing) {
-            Toast.makeText(this, "Connection lost!!", Toast.LENGTH_LONG).show();
-            showNoNetworkMenu();
-        }
     }
 }
 

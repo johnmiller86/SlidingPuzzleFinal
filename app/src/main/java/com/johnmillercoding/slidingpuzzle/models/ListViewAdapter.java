@@ -71,6 +71,7 @@ public class ListViewAdapter extends BaseAdapter{
         HashMap<String, String> map=list.get(position);
         level.setText(map.get(LEVEL));
         email.setText(map.get(EMAIL));
+        email.setSelected(true);
         score.setText(map.get(SCORE));
         moves.setText(map.get(MOVES));
         time.setText(map.get(TIME));

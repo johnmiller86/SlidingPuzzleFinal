@@ -28,14 +28,12 @@ public class CampaignFragment extends Fragment {
 
     // UI Components
     private View view;
-    // --Commented out by Inspection (10/30/2016 2:28 AM):private int glass;
     private ArrayList<int[]> rowCols;
 
     public CampaignFragment() {
         // Required empty public constructor
     }
 
-    @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

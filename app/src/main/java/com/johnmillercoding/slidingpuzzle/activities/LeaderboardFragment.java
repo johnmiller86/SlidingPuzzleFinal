@@ -57,23 +57,7 @@ public class LeaderboardFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_leaderboard, container, false);
         listView = (ListView) view.findViewById(R.id.listView1);
-        list=new ArrayList<>();
-//
-////        LeaderboardFunctions leaderboardFunctions = new LeaderboardFunctions();
-////        ArrayList<LeaderboardEntry> leaderboards = leaderboardFunctions.getLeaderboards(getContext());
-//
-//        for (LeaderboardEntry leaderboardEntry : leaderboards){
-//            HashMap<String, String> hashMap = new HashMap<>();
-//            hashMap.put(FIRST_COLUMN, leaderboardEntry.getEmail());
-//            hashMap.put(SECOND_COLUMN, String.valueOf(leaderboardEntry.getScore()));
-//            hashMap.put(THIRD_COLUMN, String.valueOf(leaderboardEntry.getMoves()));
-//            hashMap.put(FOURTH_COLUMN, leaderboardEntry.getTime());
-//            hashMap.put(FIFTH_COLUMN, String.valueOf(leaderboardEntry.getLevel_num()));
-//            list.add(hashMap);
-//        }
-//
-//        ListViewAdapter adapter = new ListViewAdapter(getLayoutInflater(savedInstanceState), list);
-//        listView.setAdapter(adapter);
+        list = new ArrayList<>();
         return getLeaderboards(view, savedInstanceState);
     }
 
@@ -93,16 +77,14 @@ public class LeaderboardFragment extends Fragment {
     private View getLeaderboards(View view, final Bundle savedInstanceState) {
         String requestString = "get_leaderboards";
 
-//        final ArrayList<LeaderboardEntry> leaderboards = new ArrayList<>();
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-//        progressDialog.setMessage("Retrieving settings...");
-//        progressDialog.show();
-        Toast.makeText(getContext(), "Retrieving leaderboards...", Toast.LENGTH_SHORT).show();
+        progressDialog.setMessage("Retrieving leaderboards...");
+        progressDialog.show();
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEADERBOARDS, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-//                progressDialog.dismiss();
+                progressDialog.dismiss();
 
                 try {
 
@@ -120,15 +102,7 @@ public class LeaderboardFragment extends Fragment {
                             // Retrieve inner JSON objects
                             JSONObject row = jsonArray.getJSONObject(i);
 
-//                            // Configure entry and add to list
-//                            LeaderboardEntry leaderboardEntry = new LeaderboardEntry();
-//                            leaderboardEntry.setEmail(row.getString("email"));
-//                            leaderboardEntry.setLevel_num(row.getInt("level_num"));
-//                            leaderboardEntry.setMoves(row.getInt("moves"));
-//                            leaderboardEntry.setScore(row.getInt("score"));
-//                            leaderboardEntry.setTime(row.getString("time"));
-//                            leaderboards.add(leaderboardEntry);
-
+                            // Configure entry and add to list
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put(LEVEL, String.valueOf(row.getInt("level_num")));
                             hashMap.put(EMAIL, row.getString("email"));

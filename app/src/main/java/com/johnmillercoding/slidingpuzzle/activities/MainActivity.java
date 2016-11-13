@@ -3,6 +3,8 @@ package com.johnmillercoding.slidingpuzzle.activities;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,17 +13,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.Settings;
 import com.johnmillercoding.slidingpuzzle.utilities.LeaderboardFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.LevelFunctions;
+import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.SettingFunctions;
 
 @SuppressLint("CommitTransaction")
-public class MainActivity extends FragmentActivity implements FragmentDrawer.FragmentDrawerListener {
+public class MainActivity extends FragmentActivity implements FragmentDrawer.FragmentDrawerListener, NetworkReceiver.NetworkStateReceiverListener {
 
     // Session
     public static SessionManager sessionManager;
@@ -46,48 +50,55 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     public static final String PUZZLE_ROW_TAG = "puzzle_row_tag";
     public static final String PUZZLE_COL_TAG = "puzzle_col_tag";
 
+    // Network
+    private NetworkReceiver networkReceiver;
+    private boolean isInFocus;
+    public static boolean connected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Instantiating Session
-        sessionManager = new SessionManager(getApplicationContext());
-//        userFunctions = new UserFunctions();
-//        user = userFunctions.getUser(sessionManager.getEmail());
-        settingFunctions = new SettingFunctions();
-        settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
-        puzzleFunctions = new PuzzleFunctions();
-        leaderboardFunctions = new LeaderboardFunctions();
-        levelFunctions = new LevelFunctions();
-        levelFunctions.setOpenLevels();
-//        leaderboards = leaderboardFunctions.getLeaderboards(this);
+        // Network stuff
+        isInFocus = true;
+        networkReceiver = new NetworkReceiver();
+        networkReceiver.addListener(this);
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        // FragmentDrawer
-        FragmentDrawer fragmentDrawer = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-        fragmentDrawer.setDrawerListener(this);
+        if (connected) {
+            // Instantiating Session
+            sessionManager = new SessionManager(getApplicationContext());
+            settingFunctions = new SettingFunctions();
+            settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
+            puzzleFunctions = new PuzzleFunctions();
+            leaderboardFunctions = new LeaderboardFunctions();
+            levelFunctions = new LevelFunctions();
+            levelFunctions.setOpenLevels();
 
-        // Set profile picture if applicable
-        if (!sessionManager.getFacebookImageUrl().equals("")){
-            fragmentDrawer.setProfilePicture();
+            // FragmentDrawer
+            FragmentDrawer fragmentDrawer = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+            fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+            fragmentDrawer.setDrawerListener(this);
+
+            // Set profile picture if applicable
+            if (!sessionManager.getFacebookImageUrl().equals("")) {
+                fragmentDrawer.setProfilePicture();
+            }
+
+            // Create/recover fragment
+            if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG) != null) {
+                fragment = getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
+            } else {
+                fragment = new MainMenuFragment();
+            }
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
+        }else{
+            networkUnavailable();
         }
-
-
-        // Database Manager
-//        DBHelper dbHelper = new DBHelper(this.getApplicationContext());
-//        DatabaseManager.initializeInstance(dbHelper);
-
-        // Create/recover fragment
-        if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG) != null){
-            fragment = getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
-        }else {
-            fragment = new MainMenuFragment();
-        }
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
     }
 
     /**
@@ -210,4 +221,44 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         //Save the Fragment's instance
         getSupportFragmentManager().putFragment(savedFragment, FRAGMENT_TAG, fragment);
     }
+
+
+    @Override
+    public void networkAvailable() {
+        if (isInFocus) {
+            connected = true;
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        if (isInFocus) {
+            connected = false;
+            Toast.makeText(this, "No connection!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+//            finish();
+        }
+    }
+
+//    /**
+//     * Shows a menu when no network available.
+//     */
+//    private void showNoNetworkMenu() {
+//        final CharSequence[] charSequences = { "Retry", "Home"};
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("No Network Connection");
+//        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (charSequences[item].equals("Retry")) {
+//                    registerAccount(new View(getApplicationContext()));
+//                }else if (charSequences[item].equals("Home")) {
+//                }
+//            }
+//        });
+//        builder.setCancelable(false);
+//        alertDialog = builder.create();
+//        alertDialog.show();
+//    }
 }

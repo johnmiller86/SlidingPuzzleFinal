@@ -71,6 +71,7 @@ public class FragmentDrawer extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
 
+        // Configure the NavigationDrawerAdapter
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -87,6 +88,7 @@ public class FragmentDrawer extends Fragment {
             }
         }));
 
+        // Configure the ImageView
         imageView = (ImageView) layout.findViewById(R.id.profile);
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -105,6 +107,7 @@ public class FragmentDrawer extends Fragment {
             }
         });
 
+        // Configure the TextView
         TextView textView = (TextView) layout.findViewById(R.id.emailTextView);
         textView.setText(sessionManager.getEmail());
         return layout;
@@ -119,8 +122,7 @@ public class FragmentDrawer extends Fragment {
     interface ClickListener {
         void onClick(View view, int position);
 
-        @SuppressWarnings("EmptyMethod")
-        void onLongClick(@SuppressWarnings("UnusedParameters") View view, @SuppressWarnings("UnusedParameters") int position);
+        void onLongClick(View view, int position);
     }
 
     static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
@@ -171,12 +173,9 @@ public class FragmentDrawer extends Fragment {
      * Interface for drawer listener.
      */
     public interface FragmentDrawerListener {
-        void onDrawerItemSelected(@SuppressWarnings("UnusedParameters") View view, int position);
+        void onDrawerItemSelected(View view, int position);
     }
 
-//    public void setProfilePicture(Bitmap picture){
-//        imageView.setImageBitmap(picture);
-//    }
     public void setProfilePicture(){
         Glide.with(FragmentDrawer.this).load(sessionManager.getFacebookImageUrl()).into(imageView);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

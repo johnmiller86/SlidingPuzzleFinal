@@ -14,6 +14,9 @@ import com.johnmillercoding.slidingpuzzle.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,17 +30,11 @@ public class UserFunctions {
      */
     public void loginUser(final Activity activity, final SessionManager sessionManager, final User user) {
         String requestString = "login";
-
-//        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
-//        progressDialog.setMessage("Logging in ...");
-//        progressDialog.show();
-
+        Toast.makeText(getApplicationContext(), "Logging in ...", Toast.LENGTH_SHORT).show();
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_LOGIN, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-//                progressDialog.dismiss();
-
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
@@ -73,7 +70,6 @@ public class UserFunctions {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-//                progressDialog.dismiss();
             }
         }) {
 
@@ -82,7 +78,7 @@ public class UserFunctions {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<>();
                 params.put("email", user.getEmail());
-                params.put("password", user.getPassword());
+                params.put("password", getSha512SecurePassword(user.getPassword()));
                 return params;
             }
 
@@ -98,20 +94,16 @@ public class UserFunctions {
     public void registerUser(final Activity activity, final User user, final boolean facebook) {
         String requestString = "register";
 
-//        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
-//        if (facebook){
-//            progressDialog.setMessage("Logging in...");
-//        }else {
-//            progressDialog.setMessage("Registering...");
-//        }
-//        progressDialog.show();
+        if (facebook){
+            Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getApplicationContext(), "Registering...", Toast.LENGTH_SHORT).show();
+        }
 
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_REGISTER, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-//                progressDialog.hide();
-
                 try {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
@@ -123,9 +115,8 @@ public class UserFunctions {
                     }
                     // Register error
                     else {
-                        String errorMsg = jObj.getString("error_msg");
                         if (!facebook) {
-                            Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), jObj.getString("error_msg"), Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -144,7 +135,6 @@ public class UserFunctions {
                 if (!facebook) {
                     Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 }
-//                progressDialog.hide();
             }
         }) {
 
@@ -156,7 +146,7 @@ public class UserFunctions {
                     params.put("facebook", "true");
                 }
                 params.put("email", user.getEmail());
-                params.put("password", user.getPassword());
+                params.put("password", getSha512SecurePassword(user.getPassword()));
 
                 return params;
             }
@@ -165,5 +155,26 @@ public class UserFunctions {
 
         // Adding request to request queue
         VolleyController.getInstance().addToRequestQueue(strReq, requestString);
+    }
+
+    /**
+     * Generates a sha512 encoded password.
+     * @param passwordToHash the password to be hashed.
+     * @return the hashed password.
+     */
+    private String getSha512SecurePassword(String passwordToHash) {
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return generatedPassword;
     }
 }

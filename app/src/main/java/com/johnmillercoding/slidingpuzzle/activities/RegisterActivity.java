@@ -1,6 +1,10 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
+import android.content.DialogInterface;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -8,21 +12,23 @@ import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
+import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
-
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 
 @SuppressWarnings("UnusedParameters")
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener {
 
     // UI Components
     private EditText emailEditText, passwordEditText, confirmPasswordEditText;
-//    private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
+    // Functions
     private UserFunctions userFunctions;
+
+    // Network
+    private NetworkReceiver networkReceiver;
+    private boolean isInFocus, connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +40,13 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.editTextRegisterPassword);
         confirmPasswordEditText = (EditText) findViewById(R.id.editTextConfirmRegisterPassword);
 
-        // Progress dialog
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setCancelable(false);
+        // Network stuff
+        isInFocus = true;
+        networkReceiver = new NetworkReceiver();
+        networkReceiver.addListener(this);
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        // Functions
         userFunctions = new UserFunctions();
     }
 
@@ -60,8 +70,16 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, "You must choose a password!!", Toast.LENGTH_SHORT).show();
         }
         else if(!user.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")){
-            Toast.makeText(RegisterActivity.this, "Password must be at least 8 characters, contain no spaces and contain one uppercase, one lowercase, one number and one " +
-                    "special character.", Toast.LENGTH_LONG).show();
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Password Policy");
+            alertDialog.setMessage("Password must contain:\n\t-8 characters\n\t-1 uppercase\n\t-1 lowercase\n\t-1 number\n\t-1 special character\nSpaces are not permitted.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
         else if (confirmedPass.equals("")){
             Toast.makeText(RegisterActivity.this, "You must confirm your password!!", Toast.LENGTH_SHORT).show();
@@ -69,113 +87,46 @@ public class RegisterActivity extends AppCompatActivity {
         else if (!user.getPassword().equals(confirmedPass)){
             Toast.makeText(RegisterActivity.this, "Password and confirmation do not match!!", Toast.LENGTH_SHORT).show();
         }else{
-            user.setPassword(getSha512SecurePassword(user.getPassword()));
-            userFunctions.registerUser(this, user, false);
+            if (connected) {
+                userFunctions.registerUser(this, user, false);
+            }else{
+                showNoNetworkMenu();
+            }
         }
     }
 
-//    /**
-//     * Registers user into the mysql database.
-//     * @param email the user's email.
-//     * @param password the entered password.
-//     */
-//    private void registerUser(final String email, final String password) {
-//        // Tag used to cancel the request
-//        String requestString = "register";
-//
-//        progressDialog.setMessage("Registering...");
-//        showDialog();
-//
-//        StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_REGISTER, new Response.Listener<String>() {
-//
-//            @Override
-//            public void onResponse(String response) {
-//                Log.d(TAG, "Register Response: " + response);
-//                hideDialog();
-//
-//                try {
-//                    JSONObject jObj = new JSONObject(response);
-//                    boolean error = jObj.getBoolean("error");
-//
-//                    // Register success
-//                    if (!error) {
-//                        Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_LONG).show();
-//                        finish();
-//                    }
-//                    // Register error
-//                    else {
-//                        String errorMsg = jObj.getString("error_msg");
-//                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//                // JSON error
-//                catch (JSONException e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e(TAG, "Registration Error: " + error.getMessage());
-//                Toast.makeText(getApplicationContext(),
-//                        error.getMessage(), Toast.LENGTH_LONG).show();
-//                hideDialog();
-//            }
-//        }) {
-//
-//            @Override
-//            protected Map<String, String> getParams() {
-//                // Posting parameters to login url
-//                Map<String, String> params = new HashMap<>();
-//                params.put("email", email);
-//                params.put("password", password);
-//
-//                return params;
-//            }
-//
-//        };
-//
-//        // Adding request to request queue
-//        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
-//    }
+    @Override
+    public void networkAvailable() {
+        if (isInFocus) {
+            connected = true;
+        }
+    }
 
-//    /**
-//     * Shows the progress dialog.
-//     */
-//    private void showDialog() {
-//        if (!progressDialog.isShowing())
-//            progressDialog.show();
-//    }
-//
-//    /**
-//     * Closes the progress dialog.
-//     */
-//    private void hideDialog() {
-//        if (progressDialog.isShowing())
-//            progressDialog.dismiss();
-//    }
-
+    @Override
+    public void networkUnavailable() {
+        if (isInFocus) {
+            connected = false;
+        }
+    }
     /**
-     * Generates a sha512 encoded password.
-     * @param passwordToHash the password to be hashed.
-     * @return the hashed password.
+     * Shows a menu when no network available.
      */
-    private String getSha512SecurePassword(String passwordToHash){
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
+    private void showNoNetworkMenu() {
+        final CharSequence[] charSequences = { "Retry", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Network Connection");
+        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (charSequences[item].equals("Retry")) {
+                    registerAccount(new View(getApplicationContext()));
+                }else if (charSequences[item].equals("Cancel")) {
+                    alertDialog.cancel();
+                }
             }
-            generatedPassword = sb.toString();
-        }
-        catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
-            e.printStackTrace();
-        }
-        return generatedPassword;
+        });
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 }
