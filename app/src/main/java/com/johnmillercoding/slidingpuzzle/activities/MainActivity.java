@@ -29,14 +29,11 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
 
     // Session
     public static SessionManager sessionManager;
-    // --Commented out by Inspection (10/23/2016 1:26 AM):public static UserFunctions userFunctions;
-    // --Commented out by Inspection (10/23/2016 1:26 AM):public static User user;
     public static SettingFunctions settingFunctions;
     public static Settings settings;
     public static PuzzleFunctions puzzleFunctions;
     public static LeaderboardFunctions leaderboardFunctions;
     public static LevelFunctions levelFunctions;
-    // --Commented out by Inspection (10/23/2016 1:26 AM):public static ArrayList<LeaderboardEntry> leaderboards;
 
     // Fragment
     private FragmentTransaction fragmentTransaction;
@@ -49,6 +46,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     public static final String PUZZLE_LEVEL_TAG = "puzzle_level_tag";
     public static final String PUZZLE_ROW_TAG = "puzzle_row_tag";
     public static final String PUZZLE_COL_TAG = "puzzle_col_tag";
+    public static final String PUZZLE_MOVES_TAG = "puzzle_moves_tag";
 
     // Network
     private NetworkReceiver networkReceiver;
@@ -66,25 +64,33 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         networkReceiver.addListener(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        if (connected) {
-            // Instantiating Session
-            sessionManager = new SessionManager(getApplicationContext());
-            settingFunctions = new SettingFunctions();
-            settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
-            puzzleFunctions = new PuzzleFunctions();
-            leaderboardFunctions = new LeaderboardFunctions();
-            levelFunctions = new LevelFunctions();
-            levelFunctions.setOpenLevels();
+        // Instantiating Session
+        sessionManager = new SessionManager(getApplicationContext());
+        settingFunctions = new SettingFunctions();
+        settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
+        puzzleFunctions = new PuzzleFunctions();
+        leaderboardFunctions = new LeaderboardFunctions();
+        levelFunctions = new LevelFunctions();
+        levelFunctions.setOpenLevels();
 
-            // FragmentDrawer
-            FragmentDrawer fragmentDrawer = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-            fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-            fragmentDrawer.setDrawerListener(this);
+        // FragmentDrawer
+        FragmentDrawer fragmentDrawer = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        fragmentDrawer.setDrawerListener(this);
 
-            // Set profile picture if applicable
-            if (!sessionManager.getFacebookImageUrl().equals("")) {
-                fragmentDrawer.setProfilePicture();
-            }
+        // Set profile picture if applicable
+        if (!sessionManager.getFacebookImageUrl().equals("")) {
+            fragmentDrawer.setProfilePicture();
+        }
+
+//        // In Campaign mode, launch campaign
+//        if (getIntent().getBooleanExtra("puzzleActivity", false)){
+//            fragment = new CampaignFragment();
+//            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+//            fragmentTransaction.replace(R.id.fragment_container, fragment);
+//            fragmentTransaction.commit();
+//        }else {
 
             // Create/recover fragment
             if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG) != null) {
@@ -96,9 +102,25 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
             fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        }else{
-            networkUnavailable();
-        }
+//        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        isInFocus = true;
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        isInFocus = false;
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+//        networkReceiver.removeListener(this);
     }
 
     /**
@@ -236,29 +258,9 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
             connected = false;
             Toast.makeText(this, "No connection!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtra("noNetworkIntent", true);
             startActivity(intent);
 //            finish();
         }
     }
-
-//    /**
-//     * Shows a menu when no network available.
-//     */
-//    private void showNoNetworkMenu() {
-//        final CharSequence[] charSequences = { "Retry", "Home"};
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("No Network Connection");
-//        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int item) {
-//                if (charSequences[item].equals("Retry")) {
-//                    registerAccount(new View(getApplicationContext()));
-//                }else if (charSequences[item].equals("Home")) {
-//                }
-//            }
-//        });
-//        builder.setCancelable(false);
-//        alertDialog = builder.create();
-//        alertDialog.show();
-//    }
 }

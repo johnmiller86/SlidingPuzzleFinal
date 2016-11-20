@@ -54,9 +54,9 @@ public class NetworkReceiver extends BroadcastReceiver {
         notifyState(l);
     }
 
-    public void removeListener(NetworkStateReceiverListener l) {
-        listeners.remove(l);
-    }
+//    public void removeListener(NetworkStateReceiverListener l) {
+//        listeners.remove(l);
+//    }
 
     public interface NetworkStateReceiverListener {
         void networkAvailable();

@@ -20,6 +20,9 @@ public class Config {
     // Update leaderboards url
     public static final String URL_UPDATE_LEADERBOARDS = "https://www.johnmillercoding.com/SlidingPuzzle/update_leaderboards.php";
 
-    // Get unlocked levels
+    // Get unlocked levels url
     public static final String URL_GET_UNLOCKED = "https://www.johnmillercoding.com/SlidingPuzzle/get_unlocked.php";
+
+    // Get level url
+    public static final String URL_GET_LEVEL = "https://www.johnmillercoding.com/SlidingPuzzle/get_level.php";
 }

@@ -50,6 +50,12 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         userFunctions = new UserFunctions();
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+//        networkReceiver.removeListener(this);
+    }
+
     /**
      * Listener for the register button.
      * @param view the register button.

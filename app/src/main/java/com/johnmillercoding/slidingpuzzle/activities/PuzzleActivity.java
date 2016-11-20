@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.LeaderboardEntry;
+import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 
 import java.io.File;
@@ -40,13 +43,14 @@ import java.util.TimerTask;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MODE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
 
-public class PuzzleActivity extends AppCompatActivity {
+public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener{
 
     // Session
 ////    SessionManager sessionManager = new SessionManager(getBaseContext());
@@ -64,6 +68,8 @@ public class PuzzleActivity extends AppCompatActivity {
     private TextView movesTextView, timerTextView;
     private ImageButton previousButton;
     private Button pauseButton, resetButton;
+    private AlertDialog alertDialog;
+
 
     // Lists
     private List<ImageButton> imageButtons;
@@ -73,8 +79,12 @@ public class PuzzleActivity extends AppCompatActivity {
     private Timer timer;
     private CountDownTimer countDownTimer;
     private Animation currentAnimation, previousAnimation;
-    private int counter, movesCounter, rows, cols, startTime, currentTime, score, levelNum;
+    private int counter, movesCounter, rows, cols, startTime, currentTime, score, levelNum, movesLimit, movesRemaining;
     private boolean isPause, isCampaign;
+
+    // Network
+    private NetworkReceiver networkReceiver;
+    private boolean isInFocus, connected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,37 +97,76 @@ public class PuzzleActivity extends AppCompatActivity {
     public void onDestroy(){
         super.onDestroy();
         cancelTimers();
+//        networkReceiver.removeListener(this);
     }
 
 
     @Override
     public void onBackPressed() {
 
-        if (!isSolved()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Exit")
-                    .setMessage("Are you sure you want to quit?")
+//        if (isCampaign){
+//            final Intent intent = new Intent(PuzzleActivity.this, MainActivity.class);
+//            intent.putExtra("puzzleActivity", true);
+            if (!isSolved()) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Exit")
+                        .setMessage("Are you sure you want to quit?")
 
-                    // Open Settings button
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        }
-                    })
+                        // Finish Activity
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                setResult(Activity.RESULT_OK);
+//                                startActivity(intent);
+                                finish();
+                            }
+                        })
 
-                    // Denied, close app
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setIcon(R.mipmap.ic_launcher)
-                    .show();
-        }else{
-            setResult(Activity.RESULT_OK);
-            finish();
-        }
+                        // Cancel
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(R.mipmap.ic_launcher)
+                        .show();
+            }else{
+                setResult(Activity.RESULT_OK);
+//                startActivity(intent);
+                if (isCampaign){
+                    int unlocked = sessionManager.getUnlocked();
+                    if (levelNum < 20 && sessionManager.getUnlocked() == levelNum - 1){
+                        sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
+                    }
+                }
+                finish();
+            }
+//        }else {
+//            if (!isSolved()) {
+//                new AlertDialog.Builder(this)
+//                        .setTitle("Exit")
+//                        .setMessage("Are you sure you want to quit?")
+//
+//                        // Open Settings button
+//                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+////                                setResult(Activity.RESULT_OK);
+//                                finish();
+//                            }
+//                        })
+//
+//                        // Denied, close app
+//                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        })
+//                        .setIcon(R.mipmap.ic_launcher)
+//                        .show();
+//            } else {
+////                setResult(Activity.RESULT_OK);
+//                finish();
+//            }
+//        }
     }
 
     @Override
@@ -130,6 +179,12 @@ public class PuzzleActivity extends AppCompatActivity {
      * Initializes all references.
      */
     private void initializeReferences() {
+
+        // Network stuff
+        isInFocus = true;
+        networkReceiver = new NetworkReceiver();
+        networkReceiver.addListener(this);
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Initializing Layout
         tableLayout = (TableLayout) findViewById(R.id.table_layout);
@@ -196,6 +251,9 @@ public class PuzzleActivity extends AppCompatActivity {
             isCampaign = true;
             startTime = intent.getIntExtra(PUZZLE_TIMER_TAG, 0);
             levelNum = intent.getIntExtra(PUZZLE_LEVEL_TAG, 1);
+            movesLimit = intent.getIntExtra(PUZZLE_MOVES_TAG, 0);
+            movesRemaining = movesLimit;
+            movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
 //            rows = intent.getIntExtra(PUZZLE_ROW_TAG, 4);
 //            cols = intent.getIntExtra(PUZZLE_COL_TAG, 3);
 
@@ -349,8 +407,13 @@ public class PuzzleActivity extends AppCompatActivity {
             if (counter % 2 == 0) {
                 setPrevious(view);
                 imageButton.setAlpha(0.6f);
-                movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
                 counter++;
+
+                if (isCampaign){
+                    movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
+                }else {
+                    movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
+                }
             }
             else if(counter % 2 == 1) {
                 previousButton.setAlpha(1.0f);
@@ -368,8 +431,19 @@ public class PuzzleActivity extends AppCompatActivity {
         cancelTimers();
         counter = 0;
         movesCounter = 0;
-        movesTextView.setText(R.string.default_moves);
-        timerTextView.setText(R.string.default_time);
+
+        if (isCampaign){
+            movesRemaining = movesLimit;
+            movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
+            if (startTime > 60) {
+                timerTextView.setText(getString(R.string.minutes_seconds, startTime / 60, startTime % 60));
+            } else {
+                timerTextView.setText(getResources().getQuantityString(R.plurals.seconds, startTime, startTime));
+            }
+        }else {
+            movesTextView.setText(R.string.default_moves);
+            timerTextView.setText(R.string.default_time);
+        }
 
         // Restarting
         randomize();
@@ -430,7 +504,13 @@ public class PuzzleActivity extends AppCompatActivity {
                     imageButton.setImageDrawable(drawable);
                     counter++;
                     movesCounter++;
-                    movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
+
+                    if (isCampaign){
+                        movesRemaining--;
+                        movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
+                    }else {
+                        movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
+                    }
                 }
             }
         }
@@ -440,12 +520,23 @@ public class PuzzleActivity extends AppCompatActivity {
             pauseButton.setEnabled(false);
 
             if (isCampaign){
-                score = ((startTime - currentTime) * 10000) / movesCounter;
+                int bestPossible = levelNum * 10000 + 40000;
+                double movesFactor = 1 - ((double) (movesCounter - 1) / movesLimit);
+                double timeFactor = 1 - ((double) (startTime - currentTime - 1) /  startTime);
+                score = (int)(((movesFactor + timeFactor) / 2) * bestPossible);
                 Toast.makeText(this, "Congratulations, You Scored " + score + " points!!!", Toast.LENGTH_LONG).show();
                 recordHighScores();
             }else{
                 Toast.makeText(this, "Congratulations, You Win!!!", Toast.LENGTH_LONG).show();
             }
+        }else if(movesRemaining == 0){
+            cancelTimers();
+            disableButtons();
+            pauseButton.setEnabled(false);
+
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(500);
+            Toast.makeText(PuzzleActivity.this, "You ran out of moves!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -508,7 +599,13 @@ public class PuzzleActivity extends AppCompatActivity {
         }
         // Tiles not adjacent
         counter--;
-        movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
+
+        if (isCampaign){
+            movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
+
+        }else {
+            movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesCounter, movesCounter));
+        }
         // Don't annoy user if they cancelled a selection
         if (currentIndex != previousIndex) {
             Toast.makeText(this, "You must select two adjacent tiles!", Toast.LENGTH_SHORT).show();
@@ -593,15 +690,22 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private void recordHighScores(){
-            // TODO need to do level num and probably levels table
-        LeaderboardEntry leaderboardEntry = new LeaderboardEntry();
-        leaderboardEntry.setEmail(sessionManager.getEmail());
-        leaderboardEntry.setLevel_num(levelNum);
-        leaderboardEntry.setScore(score);
-        leaderboardEntry.setTime(timerTextView.getText().toString());
-        leaderboardEntry.setMoves(movesCounter);
-        leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
-//        leaderboardFunctions.insert(user, leaderboardEntry);
+        if (connected) {
+            LeaderboardEntry leaderboardEntry = new LeaderboardEntry();
+            leaderboardEntry.setEmail(sessionManager.getEmail());
+            leaderboardEntry.setLevel_num(levelNum);
+            leaderboardEntry.setScore(score);
+
+            if (isCampaign){
+                leaderboardEntry.setTime(String.valueOf(startTime - currentTime));
+            }else {
+                leaderboardEntry.setTime(timerTextView.getText().toString());
+            }
+            leaderboardEntry.setMoves(movesCounter);
+            leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
+        }else{
+            showNoNetworkMenu();
+        }
     }
 
     /**
@@ -613,4 +717,51 @@ public class PuzzleActivity extends AppCompatActivity {
         return "level_" + level;
     }
 
+    @Override
+    public void networkAvailable() {
+        if (isInFocus) {
+            connected = true;
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        if (isInFocus) {
+            connected = false;
+        }
+    }
+    /**
+     * Shows a menu when no network available.
+     */
+    private void showNoNetworkMenu() {
+//        final CharSequence[] charSequences = {"Retry", "Exit"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Network Connection");
+        builder.setMessage("Your connection was interrupted and your score will not be recorded.  Would you like to retry to submit your score?");
+//        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (charSequences[item].equals("Retry")) {
+//                    recordHighScores();
+//                }else if (charSequences[item].equals("Exit")) {
+//                    alertDialog.cancel();
+//                }
+//            }
+//        });
+        builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                recordHighScores();
+            }
+        });
+        builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
 }

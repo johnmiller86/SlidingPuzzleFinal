@@ -9,16 +9,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.johnmillercoding.slidingpuzzle.R;
+import com.johnmillercoding.slidingpuzzle.models.Level;
+import com.johnmillercoding.slidingpuzzle.utilities.Config;
+import com.johnmillercoding.slidingpuzzle.utilities.VolleyController;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MODE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
@@ -35,9 +50,7 @@ public class CampaignFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,19 +155,23 @@ public class CampaignFragment extends Fragment {
 
             String resName = getResources().getResourceEntryName(view.getId());
             int levelNum = Integer.valueOf(String.valueOf(resName).replaceAll("\\D+", ""));
-            Intent campaign = new Intent(getActivity(), PuzzleActivity.class);
-            fillRowCols();  // TODO configure level stuff
-
-            campaign.putExtra(PUZZLE_MODE_TAG, resName);
-            campaign.putExtra(PUZZLE_TIMER_TAG, 10 * levelNum);
-            campaign.putExtra(PUZZLE_LEVEL_TAG, levelNum);
-            campaign.putExtra(PUZZLE_COL_TAG, rowCols.get(levelNum - 1)[0]);
-            campaign.putExtra(PUZZLE_ROW_TAG, rowCols.get(levelNum - 1)[1]);
-            startActivityForResult(campaign, 0);
-            getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            getLevel(levelNum, resName);
         }
     };
 
+    private void startGame(Level level){
+        Intent campaign = new Intent(getActivity(), PuzzleActivity.class);
+        campaign.putExtra(PUZZLE_MODE_TAG, level.getUrl());
+        campaign.putExtra(PUZZLE_TIMER_TAG, level.getTimeLimit());
+        campaign.putExtra(PUZZLE_LEVEL_TAG, level.getLevelNum());
+        campaign.putExtra(PUZZLE_COL_TAG, level.getColumns());
+        campaign.putExtra(PUZZLE_ROW_TAG, level.getRows());
+            campaign.putExtra(PUZZLE_MOVES_TAG, level.getMoveLimit());
+//        startActivity(campaign);
+        startActivityForResult(campaign, 0);
+        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//        getActivity().finish();
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -169,13 +186,61 @@ public class CampaignFragment extends Fragment {
         }
     }
 
-    // Temp level configure  // TODO MySQL?
-    private void fillRowCols() {
-        rowCols = new ArrayList<>();
-        for (int i = 2; i <= 8; i++) {
-            rowCols.add(new int[]{i, i});
-            rowCols.add(new int[]{i + 1, i});
-            rowCols.add(new int[]{i, i + 1});
-        }
+    /**
+     * Gets the requested level.
+     */
+    public void getLevel(final int levelNum, final String resName) {
+        String requestString = "get_level";
+        StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
+        final Level level = new Level(levelNum);
+            @Override
+            public void onResponse(String response) {
+
+                try {
+
+                    // Retrieve JSON error object
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean error = jsonObject.getBoolean("error");
+
+                    // Check for error node in json
+                    if (!error) {
+                        level.setLevelNum(levelNum);
+                        level.setColumns(jsonObject.getInt("columns"));
+                        level.setRows(jsonObject.getInt("rows"));
+                        level.setTimeLimit(jsonObject.getInt("time_limit"));
+                        level.setMoveLimit(jsonObject.getInt("move_limit"));
+//                        level.setUrl(jsonObject.getString("url"));  // In case we host images
+                        level.setUrl(resName);
+                        startGame(level);
+                    } else {
+                        // Error fetching data. Get the error message
+                        String errorMsg = jsonObject.getString("error_msg");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                    }
+                }
+                // JSON error
+                catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<>();
+                params.put("level_num", String.valueOf(levelNum));
+                return params;
+            }
+        };
+        // Adding request to request queue
+        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
     }
 }

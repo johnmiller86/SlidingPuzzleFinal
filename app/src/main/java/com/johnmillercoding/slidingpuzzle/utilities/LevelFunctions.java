@@ -16,6 +16,8 @@ import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 
+//import java.util.logging.Level;
+
 /**
  * Class to handle all puzzleFunctions DB functions.
  * @author John D. Miller.
@@ -24,10 +26,8 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.session
  */
 public class LevelFunctions {
 
-
-
     /**
-     * Saves the user's settings in MySQL.
+     * Gets the level number the user has unlocked.
      */
     public void setOpenLevels() {
         String requestString = "get_unlocked";
@@ -83,4 +83,59 @@ public class LevelFunctions {
         // Adding request to request queue
         VolleyController.getInstance().addToRequestQueue(strReq, requestString);
     }
+
+//    /**
+//     * Gets the requested level.
+//     */
+//    public void getLevel(final Level level) {
+//        String requestString = "get_level";
+//        StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
+//
+//            @Override
+//            public void onResponse(String response) {
+//
+//                try {
+//
+//                    // Retrieve JSON error object
+//                    JSONObject jsonObject = new JSONObject(response);
+//                    boolean error = jsonObject.getBoolean("error");
+//                    Toast.makeText(getApplicationContext(), jsonObject.toString(),Toast.LENGTH_LONG).show();
+//                    // Check for error node in json
+//                    if (!error) {
+//                        level.setColumns(jsonObject.getInt("columns"));
+//                        level.setRows(jsonObject.getInt("rows"));
+//                        level.setTimeLimit(jsonObject.getInt("time_limit"));
+//                        level.setMoveLimit(jsonObject.getInt("move_limit"));
+//                        level.setUrl(jsonObject.getString("url"));
+//                    } else {
+//                        // Error fetching data. Get the error message
+//                        String errorMsg = jsonObject.getString("error_msg");
+////                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//                // JSON error
+//                catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//        }) {
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//                // Posting parameters to login url
+//                Map<String, String> params = new HashMap<>();
+//                params.put("level_num", String.valueOf(level.getLevelNum()));
+//                return params;
+//            }
+//        };
+//        // Adding request to request queue
+//        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
+//    }
 }

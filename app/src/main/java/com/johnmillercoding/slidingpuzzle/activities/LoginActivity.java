@@ -65,28 +65,61 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         networkReceiver.addListener(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-            // Session
-            sessionManager = new SessionManager(getApplicationContext());
-            userFunctions = new UserFunctions();
+        // Session
+        sessionManager = new SessionManager(getApplicationContext());
+        userFunctions = new UserFunctions();
 
-            // If user is logged in, continue to the main activity
-            if (sessionManager.isLoggedIn() && connected) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        // If user is logged in, continue to the main activity
+        if (sessionManager.isLoggedIn() && connected) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         isInFocus = true;
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        registerReceiver(networkReceiver);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         isInFocus = false;
+//        if (alertDialog != null && alertDialog.isShowing()){
+//            alertDialog.dismiss();
+//        }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+//        networkReceiver.removeListener(this);
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.dismiss();
+        }
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+//        networkReceiver.removeListener(this);
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.dismiss();
+        }
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
     }
 
     // Login button Click Event
@@ -201,9 +234,17 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
 
             // Return to main menu
             if (sessionManager.isLoggedIn()){
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
+                // Activity started by main menu, resume
+                if (getIntent().getBooleanExtra("noNetworkIntent", false)){
+                    finish();
+                }
+                // Opened with no service, start normally
+                else {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         }
     }
@@ -211,6 +252,9 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     @Override
     public void networkUnavailable() {
         if (isInFocus) {
+            if (alertDialog != null && alertDialog.isShowing()){
+                alertDialog.dismiss();
+            }
             showNoNetworkMenu();
         }
         connected = false;
@@ -220,7 +264,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
      * Shows a menu when no network available.
      */
     private void showNoNetworkMenu() {
-        final CharSequence[] charSequences = { "Play Offline", "Exit Game"};
+        final CharSequence[] charSequences = {"Play Offline"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("No Network Connection");
         builder.setItems(charSequences, new DialogInterface.OnClickListener() {
@@ -231,9 +275,8 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
                     // Start intent, but leave this activity open to return to
                     Intent intent = new Intent(LoginActivity.this, PuzzleActivity.class);
                     intent.putExtra("random", true);
+                    alertDialog.dismiss();
                     startActivity(intent);
-                }else if (charSequences[item].equals("Exit Game")) {
-                    finish();
                 }
             }
         });
