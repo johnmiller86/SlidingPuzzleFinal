@@ -3,6 +3,7 @@ package com.johnmillercoding.slidingpuzzle.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +20,9 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
 import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
@@ -58,6 +62,16 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         // Linking UI Components
         emailEditText = (EditText) findViewById(R.id.editTextEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
+
+        // Ad stuff
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3063574658609710~5220443587");
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4")  // An example device ID
+                .build();
+        mAdView.loadAd(adRequest);
 
         // Network stuff
         isInFocus = true;
@@ -154,10 +168,26 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-
-        // Listener
         LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
+
+        // Appearance
+//        facebookLoginButton.setBackgroundResource(R.drawable.button);
+//        facebookLoginButton.setText("Login");
+        float fbIconScale = 1.45F;
+        Drawable drawable = getResources().getDrawable(
+                com.facebook.R.drawable.com_facebook_button_icon);
+        drawable.setBounds(0, 0, (int)(drawable.getIntrinsicWidth()*fbIconScale), (int)(drawable.getIntrinsicHeight()*fbIconScale));
+        facebookLoginButton.setCompoundDrawables(drawable, null, null, null);
+        facebookLoginButton.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.fb_margin_override_textpadding));
+        facebookLoginButton.setPadding(
+                getResources().getDimensionPixelSize(R.dimen.fb_margin_override_lr),
+                getResources().getDimensionPixelSize(R.dimen.fb_margin_override_top),
+                0,
+                getResources().getDimensionPixelSize(R.dimen.fb_margin_override_bottom));
+//        facebookLoginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
+        // Listener
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             // User was successfully logged in

@@ -32,7 +32,7 @@ import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MODE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
@@ -160,7 +160,7 @@ public class CampaignFragment extends Fragment {
 
     private void startGame(Level level){
         Intent campaign = new Intent(getActivity(), PuzzleActivity.class);
-        campaign.putExtra(PUZZLE_MODE_TAG, level.getUrl());
+        campaign.putExtra(PUZZLE_RESOURCE_TAG, level.getUrl());
         campaign.putExtra(PUZZLE_TIMER_TAG, level.getTimeLimit());
         campaign.putExtra(PUZZLE_LEVEL_TAG, level.getLevelNum());
         campaign.putExtra(PUZZLE_COL_TAG, level.getColumns());

@@ -79,4 +79,8 @@
     <string name="game_paused">Game Paused</string>
     <string name="resume">Resume</string>
     <string name="quit">Quit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3063574658609710/8173909984</string>
 </resources>

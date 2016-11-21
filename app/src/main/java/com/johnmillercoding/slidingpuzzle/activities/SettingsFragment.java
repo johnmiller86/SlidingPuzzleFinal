@@ -381,35 +381,6 @@ public class SettingsFragment extends Fragment {
         startActivityForResult(intent, REQUEST_PERMISSION);
     }
 
-
-
-
-
-//    public class MyNumberPickerScrollListener implements NumberPicker.OnScrollListener {
-//
-//        private int oldValue;
-//
-//        public MyNumberPickerScrollListener(int initialValue) {
-//            oldValue = initialValue;
-//        }
-//
-//        @Override
-//        public void onScrollStateChange(NumberPicker numberPicker, int scrollState) {
-//            if (scrollState == NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
-//                //We get the different between oldValue and the new value
-//                int valueDiff = numberPicker.getValue() - oldValue;
-//
-//                //Update oldValue to the new value for the next scroll
-//                oldValue = numberPicker.getValue();
-//
-//                //Do action with valueDiff
-//                settings.setRows(oldValue);
-//                changed = true;
-//                Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
-//            }
-//        }
-//    }
-
     /**
      * Shows the number picker to change rows or columns.
      * @param which rows or columns.

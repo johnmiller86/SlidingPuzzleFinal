@@ -41,7 +41,7 @@ import java.util.TimerTask;
 
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MODE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
@@ -179,7 +179,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         answerKey = new ArrayList<>();
 
         // Campaign, set size
-        if (getIntent().getStringExtra(PUZZLE_MODE_TAG) != null){
+        if (getIntent().getStringExtra(PUZZLE_RESOURCE_TAG) != null){
             rows = getIntent().getIntExtra(PUZZLE_ROW_TAG, 4);
             cols = getIntent().getIntExtra(PUZZLE_COL_TAG, 3);
         }
@@ -228,7 +228,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         Intent intent = getIntent();
 
         // Campaign
-        if (intent.getStringExtra(PUZZLE_MODE_TAG) != null){
+        if (intent.getStringExtra(PUZZLE_RESOURCE_TAG) != null){
             isCampaign = true;
             startTime = intent.getIntExtra(PUZZLE_TIMER_TAG, 0);
             levelNum = intent.getIntExtra(PUZZLE_LEVEL_TAG, 1);
@@ -239,7 +239,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 //            cols = intent.getIntExtra(PUZZLE_COL_TAG, 3);
 
             // Create bitmap
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(intent.getStringExtra(PUZZLE_MODE_TAG), "drawable", getPackageName()));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(intent.getStringExtra(PUZZLE_RESOURCE_TAG), "drawable", getPackageName()));
             createPuzzle(bitmap);
         }
         // Free play

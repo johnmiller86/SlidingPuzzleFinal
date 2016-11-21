@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     private final String FRAGMENT_TAG = "fragment_tag";
 
     // Tags
-    public static final String PUZZLE_MODE_TAG = "puzzle_mode_tag";
+    public static final String PUZZLE_RESOURCE_TAG = "puzzle_mode_tag";
     public static final String PUZZLE_TIMER_TAG = "puzzle_timer_tag";
     public static final String PUZZLE_LEVEL_TAG = "puzzle_level_tag";
     public static final String PUZZLE_ROW_TAG = "puzzle_row_tag";
@@ -84,26 +84,16 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
             fragmentDrawer.setProfilePicture();
         }
 
-//        // In Campaign mode, launch campaign
-//        if (getIntent().getBooleanExtra("puzzleActivity", false)){
-//            fragment = new CampaignFragment();
-//            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-//            fragmentTransaction.replace(R.id.fragment_container, fragment);
-//            fragmentTransaction.commit();
-//        }else {
-
-            // Create/recover fragment
-            if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG) != null) {
-                fragment = getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
-            } else {
-                fragment = new MainMenuFragment();
-            }
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-//        }
+        // Create/recover fragment
+        if (savedInstanceState != null && getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG) != null) {
+            fragment = getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
+        } else {
+            fragment = new MainMenuFragment();
+        }
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
