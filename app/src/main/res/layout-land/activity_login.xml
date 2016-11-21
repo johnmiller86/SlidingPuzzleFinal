@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -46,10 +45,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true">
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="115dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAlignment="center"
                 android:text="@string/email_text"
                 android:id="@+id/textView"
                 android:textSize="25sp"
@@ -63,17 +62,26 @@
                 android:inputType="textEmailAddress"
                 android:ems="10"
                 android:id="@+id/editTextEmail"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/register"
+                android:onClick="Register"
+                android:id="@+id/button_register"
+                android:textSize="20sp"
+                android:background="@drawable/button"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:layout_alignParentBottom="true">
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/password_text"
                 android:id="@+id/textView3"
@@ -87,32 +95,15 @@
                 android:layout_weight="1"
                 android:inputType="textPassword"
                 android:id="@+id/editTextPassword"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/register"
-            android:onClick="Register"
-            android:id="@+id/button_register"
-            android:textSize="20sp"
-            android:background="@drawable/button"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_login"
-            android:id="@+id/button_login"
-            android:onClick="Login"
-            android:textSize="20sp"
-            android:background="@drawable/button"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_login"
+                android:id="@+id/button_login"
+                android:onClick="Login"
+                android:textSize="20sp"
+                android:background="@drawable/button"/>
         </LinearLayout>
 
 
