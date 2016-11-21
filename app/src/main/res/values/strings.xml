@@ -76,4 +76,7 @@
     <string name="score">Score</string>
     <string name="moves">Moves</string>
     <string name="time">Time</string>
+    <string name="game_paused">Game Paused</string>
+    <string name="resume">Resume</string>
+    <string name="quit">Quit</string>
 </resources>

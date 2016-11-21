@@ -119,6 +119,7 @@ public class FragmentDrawer extends Fragment {
         mDrawerLayout = drawerLayout;
     }
 
+    @SuppressWarnings("EmptyMethod")
     interface ClickListener {
         void onClick(View view, int position);
 

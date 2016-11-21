@@ -1,6 +1,5 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,7 +49,7 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderb
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
 
-public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener{
+public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener{
 
     // Session
 ////    SessionManager sessionManager = new SessionManager(getBaseContext());
@@ -67,8 +66,8 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private TableLayout tableLayout;
     private TextView movesTextView, timerTextView;
     private ImageButton previousButton;
-    private Button pauseButton, resetButton;
-    private AlertDialog alertDialog;
+    private Button pauseButton;
+    private PauseDialogFragment pauseDialogFragment;
 
 
     // Lists
@@ -82,8 +81,6 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private int counter, movesCounter, rows, cols, startTime, currentTime, score, levelNum, movesLimit, movesRemaining;
     private boolean isPause, isCampaign;
 
-    // Network
-    private NetworkReceiver networkReceiver;
     private boolean isInFocus, connected;
 
     @Override
@@ -104,68 +101,40 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     @Override
     public void onBackPressed() {
 
-//        if (isCampaign){
-//            final Intent intent = new Intent(PuzzleActivity.this, MainActivity.class);
-//            intent.putExtra("puzzleActivity", true);
-            if (!isSolved()) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Exit")
-                        .setMessage("Are you sure you want to quit?")
-
-                        // Finish Activity
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                setResult(Activity.RESULT_OK);
-//                                startActivity(intent);
-                                finish();
-                            }
-                        })
-
-                        // Cancel
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setIcon(R.mipmap.ic_launcher)
-                        .show();
-            }else{
-                setResult(Activity.RESULT_OK);
-//                startActivity(intent);
-                if (isCampaign){
-                    int unlocked = sessionManager.getUnlocked();
-                    if (levelNum < 20 && sessionManager.getUnlocked() == levelNum - 1){
-                        sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
-                    }
-                }
-                finish();
-            }
+        pauseDialogFragment.isQuitting();
+        pause();
+//        if (!isSolved()) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Exit")
+//                    .setMessage("Are you sure you want to quit?")
+//
+//                    // Finish Activity
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            setResult(Activity.RESULT_OK);
+////                                startActivity(intent);
+//                            finish();
+//                        }
+//                    })
+//
+//                    // Cancel
+//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setIcon(R.mipmap.ic_launcher)
+//                    .show();
 //        }else {
-//            if (!isSolved()) {
-//                new AlertDialog.Builder(this)
-//                        .setTitle("Exit")
-//                        .setMessage("Are you sure you want to quit?")
-//
-//                        // Open Settings button
-//                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int which) {
-////                                setResult(Activity.RESULT_OK);
-//                                finish();
-//                            }
-//                        })
-//
-//                        // Denied, close app
-//                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dialog.dismiss();
-//                            }
-//                        })
-//                        .setIcon(R.mipmap.ic_launcher)
-//                        .show();
-//            } else {
-////                setResult(Activity.RESULT_OK);
-//                finish();
+//            setResult(Activity.RESULT_OK);
+////                startActivity(intent);
+//            if (isCampaign) {
+//                int unlocked = sessionManager.getUnlocked();
+//                if (levelNum < 20 && sessionManager.getUnlocked() == levelNum - 1) {
+//                    sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
+//                }
 //            }
+//            finish();
 //        }
     }
 
@@ -175,6 +144,14 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         configureButtons();
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if (!isPause){
+            pause();
+        }
+    }
+
     /**
      * Initializes all references.
      */
@@ -182,9 +159,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 
         // Network stuff
         isInFocus = true;
-        networkReceiver = new NetworkReceiver();
+        NetworkReceiver networkReceiver = new NetworkReceiver();
         networkReceiver.addListener(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        // Pause Dialog
+        pauseDialogFragment = new PauseDialogFragment ();
+        pauseDialogFragment.setPauseDialogListener(this);
 
         // Initializing Layout
         tableLayout = (TableLayout) findViewById(R.id.table_layout);
@@ -219,7 +200,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 
         // Initializing pause and reset buttons
         pauseButton = (Button) findViewById(R.id.button_pause);
-        resetButton = (Button) findViewById(R.id.button_reset);
+        Button resetButton = (Button) findViewById(R.id.button_reset);
 
         // Add listeners
         pauseButton.setOnClickListener(new View.OnClickListener() {
@@ -422,6 +403,12 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         }
     };
 
+    private void resetButtons(){
+        for (ImageButton imageButton : imageButtons){
+            imageButton.setAlpha(1.0f);
+        }
+    }
+
     /**
      * Restarts the puzzleFunctions.
      */
@@ -431,6 +418,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         cancelTimers();
         counter = 0;
         movesCounter = 0;
+        resetButtons();
 
         if (isCampaign){
             movesRemaining = movesLimit;
@@ -458,12 +446,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private void pause(){
         isPause = !isPause;
         if (isPause) {
-            disableButtons();
-            resetButton.setEnabled(false);
+            pauseDialogFragment.show(getFragmentManager(), null);
+//            disableButtons();
+//            resetButton.setEnabled(false);
             cancelTimers();
         } else {
-            enableButtons();
-            resetButton.setEnabled(true);
+//            enableButtons();
+//            resetButton.setEnabled(true);
             startTimer(currentTime);
         }
     }
@@ -761,7 +750,12 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             }
         });
         builder.setCancelable(false);
-        alertDialog = builder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void unPause() {
+        pause();
     }
 }

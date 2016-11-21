@@ -43,7 +43,6 @@ public class CampaignFragment extends Fragment {
 
     // UI Components
     private View view;
-    private ArrayList<int[]> rowCols;
 
     public CampaignFragment() {
         // Required empty public constructor
@@ -189,7 +188,7 @@ public class CampaignFragment extends Fragment {
     /**
      * Gets the requested level.
      */
-    public void getLevel(final int levelNum, final String resName) {
+    private void getLevel(final int levelNum, final String resName) {
         String requestString = "get_level";
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
         final Level level = new Level(levelNum);

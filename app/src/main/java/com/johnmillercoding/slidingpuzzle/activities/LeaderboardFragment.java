@@ -38,7 +38,6 @@ import static com.johnmillercoding.slidingpuzzle.models.ListViewAdapter.TIME;
 @SuppressWarnings("EmptyMethod")
 public class LeaderboardFragment extends Fragment {
 
-    private View view;
     private ArrayList<HashMap<String, String>> list;
     private ListView listView;
 
@@ -55,7 +54,7 @@ public class LeaderboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_leaderboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_leaderboard, container, false);
         listView = (ListView) view.findViewById(R.id.listView1);
         list = new ArrayList<>();
         return getLeaderboards(view, savedInstanceState);

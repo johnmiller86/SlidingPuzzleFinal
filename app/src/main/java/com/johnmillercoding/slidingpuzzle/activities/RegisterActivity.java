@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
      * Listener for the register button.
      * @param view the register button.
      */
-    public void registerAccount(View view) {
+    private void registerAccount(View view) {
 
         // Configure user
         User user = new User();

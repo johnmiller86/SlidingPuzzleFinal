@@ -24,6 +24,7 @@ import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.SettingFunctions;
 
+@SuppressWarnings("EmptyMethod")
 @SuppressLint("CommitTransaction")
 public class MainActivity extends FragmentActivity implements FragmentDrawer.FragmentDrawerListener, NetworkReceiver.NetworkStateReceiverListener {
 
@@ -51,7 +52,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     // Network
     private NetworkReceiver networkReceiver;
     private boolean isInFocus;
-    public static boolean connected;
+    // --Commented out by Inspection (11/20/2016 10:00 PM):private static boolean connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,14 +249,14 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     @Override
     public void networkAvailable() {
         if (isInFocus) {
-            connected = true;
+//            connected = true;
         }
     }
 
     @Override
     public void networkUnavailable() {
         if (isInFocus) {
-            connected = false;
+//            connected = false;
             Toast.makeText(this, "No connection!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.putExtra("noNetworkIntent", true);
