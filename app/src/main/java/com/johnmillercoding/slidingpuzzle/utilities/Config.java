@@ -2,27 +2,33 @@ package com.johnmillercoding.slidingpuzzle.utilities;
 
 public class Config {
 
+    // Host url
+    private static final String HOST_NAME = "https://www.johnmillercoding.com/";
+//    private static final String HOST_NAME = "http://192.99.181.226/";
+//    private static final String HOST_NAME = "http://johnmillercoding.dynamic-dns.net/";
+
+
     // Login url
-    public static final String URL_LOGIN = "https://www.johnmillercoding.com/SlidingPuzzle/login.php";
+    public static final String URL_LOGIN = HOST_NAME + "SlidingPuzzle/login.php";
 
     // Register url
-    public static final String URL_REGISTER = "https://www.johnmillercoding.com/SlidingPuzzle/register.php";
+    public static final String URL_REGISTER = HOST_NAME + "SlidingPuzzle/register.php";
 
     // Get settings url
-    public static final String URL_GET_SETTINGS = "https://www.johnmillercoding.com/SlidingPuzzle/get_settings.php";
+    public static final String URL_GET_SETTINGS = HOST_NAME + "SlidingPuzzle/get_settings.php";
 
     // Update settings url
-    public static final String URL_SAVE_SETTINGS = "https://www.johnmillercoding.com/SlidingPuzzle/save_settings.php";
+    public static final String URL_SAVE_SETTINGS = HOST_NAME + "SlidingPuzzle/save_settings.php";
 
     // Get leaderboards url
-    public static final String URL_GET_LEADERBOARDS = "https://www.johnmillercoding.com/SlidingPuzzle/get_leaderboards.php";
+    public static final String URL_GET_LEADERBOARDS = HOST_NAME + "SlidingPuzzle/get_leaderboards.php";
 
     // Update leaderboards url
-    public static final String URL_UPDATE_LEADERBOARDS = "https://www.johnmillercoding.com/SlidingPuzzle/update_leaderboards.php";
+    public static final String URL_UPDATE_LEADERBOARDS = HOST_NAME + "SlidingPuzzle/update_leaderboards.php";
 
     // Get unlocked levels url
-    public static final String URL_GET_UNLOCKED = "https://www.johnmillercoding.com/SlidingPuzzle/get_unlocked.php";
+    public static final String URL_GET_UNLOCKED = HOST_NAME + "SlidingPuzzle/get_unlocked.php";
 
     // Get level url
-    public static final String URL_GET_LEVEL = "https://www.johnmillercoding.com/SlidingPuzzle/get_level.php";
+    public static final String URL_GET_LEVEL = HOST_NAME + "SlidingPuzzle/get_level.php";
 }

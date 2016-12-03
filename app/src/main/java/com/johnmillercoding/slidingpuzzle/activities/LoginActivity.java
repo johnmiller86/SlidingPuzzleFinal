@@ -64,14 +64,14 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
 
         // Ad stuff
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3063574658609710~5220443587");
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad));
+        AdView adView = (AdView) findViewById(R.id.adView);
+//        adView.setAdSize(new AdSize(AdSize.FULL_WIDTH, AdSize.AUTO_HEIGHT));
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
-                .addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4")  // An example device ID
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
+                .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
                 .build();
-        mAdView.loadAd(adRequest);
+        adView.loadAd(adRequest);
 
         // Network stuff
         isInFocus = true;

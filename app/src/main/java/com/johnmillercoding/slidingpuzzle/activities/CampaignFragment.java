@@ -16,6 +16,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.Level;
 import com.johnmillercoding.slidingpuzzle.utilities.Config;
@@ -32,8 +35,8 @@ import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
@@ -43,6 +46,7 @@ public class CampaignFragment extends Fragment {
 
     // UI Components
     private View view;
+    private InterstitialAd interstitialAd;
 
     public CampaignFragment() {
         // Required empty public constructor
@@ -135,13 +139,24 @@ public class CampaignFragment extends Fragment {
                 Glide.with(this)
                         .load(checkmark)
                         .into(imageButtons.get(i));
-            }else if (i > sessionManager.getUnlocked()) {
+            } else if (i > sessionManager.getUnlocked()) {
                 Glide.with(this)
                         .load(lock)
                         .into(imageButtons.get(i));
                 imageButtons.get(i).setEnabled(false);
             }
         }
+
+        // Ad stuff
+        interstitialAd = new InterstitialAd(getActivity());
+        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+        });
+        requestNewInterstitial();
     }
 
     /**
@@ -182,6 +197,11 @@ public class CampaignFragment extends Fragment {
                     .detach(MainActivity.fragment)
                     .attach(MainActivity.fragment)
                     .commitAllowingStateLoss();
+        }
+
+        // Display an ad // TODO make sure this is only every 5 minutes or so
+        if (interstitialAd.isLoaded()){
+            interstitialAd.show();
         }
     }
 
@@ -241,5 +261,16 @@ public class CampaignFragment extends Fragment {
         };
         // Adding request to request queue
         VolleyController.getInstance().addToRequestQueue(strReq, requestString);
+    }
+
+    /**
+     * Requests an ad for displaying.
+     */
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // Emulators
+                .addTestDevice("91D6373C67AB407D90746EAF75E82B1A") // S7 Edge
+                .build();
+        interstitialAd.loadAd(adRequest);
     }
 }

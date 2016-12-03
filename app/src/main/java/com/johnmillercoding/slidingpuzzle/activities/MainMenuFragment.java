@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.johnmillercoding.slidingpuzzle.R;
 
 
@@ -51,10 +53,14 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void initialize(){
+
+        // Buttons
         Button campaignPlayButton = (Button) view.findViewById(R.id.button_campaign);
         Button freePlayButton = (Button) view.findViewById(R.id.button_freeplay);
         Button settingsButton = (Button) view.findViewById(R.id.button_settings);
         Button leaderboardsButton = (Button) view.findViewById(R.id.button_leaderboards);
+
+        // Listeners
         campaignPlayButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -83,6 +89,14 @@ public class MainMenuFragment extends Fragment {
                 leaderboards();
             }
         });
+
+        // Ad stuff
+        NativeExpressAdView adView = (NativeExpressAdView) view.findViewById(R.id.adView2);
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
+                .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
+                .build();
+        adView.loadAd(request);
     }
 
     /**

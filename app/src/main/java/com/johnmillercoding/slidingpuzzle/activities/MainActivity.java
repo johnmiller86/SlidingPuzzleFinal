@@ -1,6 +1,7 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
@@ -52,7 +54,6 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     // Network
     private NetworkReceiver networkReceiver;
     private boolean isInFocus;
-    // --Commented out by Inspection (11/20/2016 10:00 PM):private static boolean connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     protected void onResume(){
         super.onResume();
         isInFocus = true;
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
@@ -111,7 +113,27 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     @Override
     protected void onDestroy(){
         super.onDestroy();
-//        networkReceiver.removeListener(this);
+//        if (alertDialog != null && alertDialog.isShowing()){
+//            alertDialog.dismiss();
+//        }
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+//        if (alertDialog != null && alertDialog.isShowing()){
+//            alertDialog.dismiss();
+//        }
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -237,21 +259,37 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
 
 
     @Override
-    public void networkAvailable() {
-        if (isInFocus) {
-//            connected = true;
-        }
-    }
+    public void networkAvailable() {}
 
     @Override
     public void networkUnavailable() {
         if (isInFocus) {
-//            connected = false;
             Toast.makeText(this, "No connection!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.putExtra("noNetworkIntent", true);
             startActivity(intent);
-//            finish();
         }
+    }
+
+    public static void enterCheat(final Context context){
+        final EditText editText = new EditText(context);
+        new AlertDialog.Builder(context)
+                .setTitle("Filthy Cheater!")
+                .setMessage("Enter your code, you lowlife.")
+                .setView(editText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String input = editText.getText().toString().trim();
+                        if (input.equals("/hacklevels")){
+                            sessionManager.setUnlocked(20);
+                            Toast.makeText(context, "Enjoy it while it lasts dirtbag!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
     }
 }

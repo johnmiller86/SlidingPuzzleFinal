@@ -36,14 +36,16 @@ public class SettingFunctions {
         String requestString = "get_settings";
 
         final Settings settings = new Settings();
-        final ProgressDialog progressDialog = new ProgressDialog(context);
+//        final ProgressDialog progressDialog = new ProgressDialog(context);
 //        progressDialog.setMessage("Retrieving settings...");
 //        progressDialog.show();
 //        Toast.makeText(context, "Retrieving settings...", Toast.LENGTH_SHORT).show();
 
+        //StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_SETTINGS, new Response.Listener<String>() {
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_SETTINGS, new Response.Listener<String>() {
 
-            @Override
+
+                @Override
             public void onResponse(String response) {
 //                progressDialog.dismiss();
 
@@ -62,21 +64,21 @@ public class SettingFunctions {
                     } else {
                         // Error fetching data. Get the error message
                         String errorMsg = jsonObject.getString("error_msg");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show();
                     }
                 }
                 // JSON error
                 catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                progressDialog.dismiss();
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+//                progressDialog.dismiss();
             }
         }) {
 

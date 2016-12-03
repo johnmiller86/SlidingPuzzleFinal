@@ -97,59 +97,29 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 //        networkReceiver.removeListener(this);
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if (!isPause && !isSolved() && currentTime != 0 && isCampaign){
+            pause();
+        }
+    }
 
     @Override
     public void onBackPressed() {
 
-        pauseDialogFragment.isQuitting();
-        pause();
-//        if (!isSolved()) {
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Exit")
-//                    .setMessage("Are you sure you want to quit?")
-//
-//                    // Finish Activity
-//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            setResult(Activity.RESULT_OK);
-////                                startActivity(intent);
-//                            finish();
-//                        }
-//                    })
-//
-//                    // Cancel
-//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    })
-//                    .setIcon(R.mipmap.ic_launcher)
-//                    .show();
-//        }else {
-//            setResult(Activity.RESULT_OK);
-////                startActivity(intent);
-//            if (isCampaign) {
-//                int unlocked = sessionManager.getUnlocked();
-//                if (levelNum < 20 && sessionManager.getUnlocked() == levelNum - 1) {
-//                    sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
-//                }
-//            }
-//            finish();
-//        }
+        if (!isSolved() && isCampaign) {
+            pauseDialogFragment.isQuitting();
+            pause();
+        }else{
+            finish();
+        }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         configureButtons();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        if (!isPause){
-            pause();
-        }
     }
 
     /**

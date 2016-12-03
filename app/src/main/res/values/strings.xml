@@ -33,6 +33,7 @@
     <string name="nav_item_settings">Settings</string>
     <string name="nav_item_leaderboards">Leaderboards</string>
     <string name="nav_item_signout">Sign Out</string>
+    <!--<string name="nav_item_cheat">Enter Cheat</string>-->
     <string name="launcher_logo">launcher_logo</string>
     <string name="user_logo">user_logo</string>
     <string name="change_free_play_puzzle">Change Free Play Puzzle</string>
@@ -43,6 +44,7 @@
         <item>@string/nav_item_leaderboards</item>
         <item>@string/nav_item_settings</item>
         <item>@string/nav_item_signout</item>
+        <!--<item>@string/nav_item_cheat</item>-->
     </string-array>
     <string name="cancel">Cancel</string>
     <string name="allow">Allow</string>
@@ -83,4 +85,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="banner_ad_unit_id">ca-app-pub-3063574658609710/8173909984</string>
+    <string name="banner_ad">ca-app-pub-3063574658609710~5220443587</string>
+    <string name="interstitial_ad">ca-app-pub-3063574658609710/1935573180</string>
+    <string name="native_ad">ca-app-pub-3063574658609710/6626137989</string>
+    <string name="native_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 </resources>

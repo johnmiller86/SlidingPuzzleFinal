@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "967136940760",
+    "firebase_url": "https://sliding-puzzle-3261905.firebaseio.com",
+    "project_id": "sliding-puzzle-3261905",
+    "storage_bucket": "sliding-puzzle-3261905.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967136940760:android:9c5eacbd69dbb62c",
+        "android_client_info": {
+          "package_name": "com.johnmillercoding.slidingpuzzle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "967136940760-543qb8ea23u4ur7a2k8dc7hepq2t4d42.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "967136940760-9daua6drl76cruji3ov2b2q9mba4fa10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_JaEtyhsAGwRAaug4BI_OGYABms8tzww"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-80847377-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

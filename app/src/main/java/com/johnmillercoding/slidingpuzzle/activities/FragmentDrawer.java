@@ -33,6 +33,7 @@ public class FragmentDrawer extends Fragment {
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
     private ImageView imageView;
+    private int longClicks;
 
     public FragmentDrawer() {
         // Required default constructor
@@ -62,6 +63,7 @@ public class FragmentDrawer extends Fragment {
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
         sessionManager = new SessionManager(getActivity().getApplicationContext());
+        longClicks = 0;
     }
 
     @Override
@@ -88,7 +90,7 @@ public class FragmentDrawer extends Fragment {
             }
         }));
 
-        // Configure the ImageView
+        // Configure the ImageView easter egg
         imageView = (ImageView) layout.findViewById(R.id.profile);
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -99,10 +101,21 @@ public class FragmentDrawer extends Fragment {
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                RotateAnimation rotateAnimation = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                rotateAnimation.setDuration(1200);
-                rotateAnimation.setFillAfter(true);
-                imageView.startAnimation(rotateAnimation);
+                if (longClicks == 0) {
+                    RotateAnimation rotateAnimation = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                    rotateAnimation.setDuration(1200);
+                    rotateAnimation.setFillAfter(true);
+                    imageView.startAnimation(rotateAnimation);
+                    longClicks++;
+                }else if(longClicks == 1){
+                    RotateAnimation rotateAnimation = new RotateAnimation(360, 0.0f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                    rotateAnimation.setDuration(1200);
+                    rotateAnimation.setFillAfter(true);
+                    imageView.startAnimation(rotateAnimation);
+                    longClicks++;
+                }else{
+                    MainActivity.enterCheat(getActivity());
+                }
                 return false;
             }
         });
