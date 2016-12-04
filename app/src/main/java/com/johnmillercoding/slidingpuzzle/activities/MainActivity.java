@@ -33,10 +33,10 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     // Session
     public static SessionManager sessionManager;
     public static SettingFunctions settingFunctions;
-    public static Settings settings;
     public static PuzzleFunctions puzzleFunctions;
     public static LeaderboardFunctions leaderboardFunctions;
     public static LevelFunctions levelFunctions;
+    public static Settings settings;
 
     // Fragment
     private FragmentTransaction fragmentTransaction;

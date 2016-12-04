@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         // Ad stuff
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad));
         AdView adView = (AdView) findViewById(R.id.adView);
-//        adView.setAdSize(new AdSize(AdSize.FULL_WIDTH, AdSize.AUTO_HEIGHT));
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
                 .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
@@ -77,18 +76,10 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         isInFocus = true;
         networkReceiver = new NetworkReceiver();
         networkReceiver.addListener(this);
-        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Session
         sessionManager = new SessionManager(getApplicationContext());
         userFunctions = new UserFunctions();
-
-        // If user is logged in, continue to the main activity
-        if (sessionManager.isLoggedIn() && connected) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     @Override
@@ -96,22 +87,26 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         super.onResume();
         isInFocus = true;
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        registerReceiver(networkReceiver);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         isInFocus = false;
-//        if (alertDialog != null && alertDialog.isShowing()){
-//            alertDialog.dismiss();
-//        }
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.dismiss();
+        }
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-//        networkReceiver.removeListener(this);
         if (alertDialog != null && alertDialog.isShowing()){
             alertDialog.dismiss();
         }
@@ -125,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     @Override
     protected void onStop(){
         super.onStop();
-//        networkReceiver.removeListener(this);
         if (alertDialog != null && alertDialog.isShowing()){
             alertDialog.dismiss();
         }
@@ -171,9 +165,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
-        // Appearance
-//        facebookLoginButton.setBackgroundResource(R.drawable.button);
-//        facebookLoginButton.setText("Login");
+        // Facebook button adjustments
         float fbIconScale = 1.45F;
         Drawable drawable = getResources().getDrawable(
                 com.facebook.R.drawable.com_facebook_button_icon);
@@ -185,7 +177,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
                 getResources().getDimensionPixelSize(R.dimen.fb_margin_override_top),
                 0,
                 getResources().getDimensionPixelSize(R.dimen.fb_margin_override_bottom));
-//        facebookLoginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
         // Listener
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -254,7 +245,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     @Override
     public void networkAvailable() {
         if (isInFocus) {
-
             connected = true;
 
             // Dismiss AlertDialog
@@ -262,15 +252,15 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
                 alertDialog.dismiss();
             }
 
-            // Return to main menu
+            // User is logged in
             if (sessionManager.isLoggedIn()){
 
-                // Activity started by main menu, resume
+                // Resume previous Activity
                 if (getIntent().getBooleanExtra("noNetworkIntent", false)){
                     finish();
                 }
-                // Opened with no service, start normally
-                else {
+                // Start normally
+                else{
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
