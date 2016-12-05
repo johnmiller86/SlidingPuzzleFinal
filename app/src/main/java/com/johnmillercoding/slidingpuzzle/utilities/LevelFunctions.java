@@ -16,14 +16,6 @@ import java.util.Map;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 
-//import java.util.logging.Level;
-
-/**
- * Class to handle all puzzleFunctions DB functions.
- * @author John D. Miller.
- * @version 1.0.1
- * @since 09/10/2016
- */
 public class LevelFunctions {
 
     /**

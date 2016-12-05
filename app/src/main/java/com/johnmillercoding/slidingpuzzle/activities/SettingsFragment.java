@@ -26,10 +26,11 @@ import android.widget.RelativeLayout;
 import com.johnmillercoding.slidingpuzzle.R;
 
 import static android.app.Activity.RESULT_OK;
+import static com.johnmillercoding.slidingpuzzle.R.string.settings;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.puzzleFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settingFunctions;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
+//import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
 
 @SuppressWarnings("EmptyMethod")
 public class SettingsFragment extends Fragment {
@@ -45,8 +46,8 @@ public class SettingsFragment extends Fragment {
     private ImageView imageView;
     private Button rowsButton, colsButton;
 
-    // NumberPicker changed flag
-//    private boolean changed = false;
+    // Settings
+//    private Settings settings;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -64,19 +65,19 @@ public class SettingsFragment extends Fragment {
         initialize();
         return view;
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        if (changed){
-//            settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
-//        }
-    }
+//
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+////        if (changed){
+////            settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+////        }
+//    }
 
     private void initialize() {
 
@@ -84,6 +85,8 @@ public class SettingsFragment extends Fragment {
         // UI components
 //        final NumberPicker numberPickerRows = (NumberPicker) view.findViewById(R.id.numberPickerRows);
 //        NumberPicker numberPickerCols = (NumberPicker) view.findViewById(R.id.numberPickerCols);
+//        settings = new Settings();
+//        settings.setColumns();
         imageView = (ImageView) view.findViewById(R.id.imageView);
         imageView.setImageBitmap(puzzleFunctions.getPuzzle(getActivity().getBaseContext()));
         Button imagePicker = (Button) view.findViewById(R.id.button_pick_puzzle);
@@ -110,59 +113,6 @@ public class SettingsFragment extends Fragment {
         });
         rowsButton.setText(String.valueOf(sessionManager.getRows()));
         colsButton.setText(String.valueOf(sessionManager.getCols()));
-//
-//        numberPickerCols.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-//            @Override
-//            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
-//                settings.setColumns(i2);
-//                changed = true;
-//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-//                Toast.makeText(getActivity(), "Fuck", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        numberPickerRows.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-//            @Override
-//            public void onValueChange(NumberPicker numberPicker, int i, int i2) {
-//                settings.setRows(i2);
-//                changed = true;
-//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-//                Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-//        numberPickerCols.setOnScrollListener(new NumberPicker.OnScrollListener() {
-//
-//             @Override
-//             public void onScrollStateChange(NumberPicker numberPicker, int i) {
-//                 settings.setRows(i);
-//                 changed = true;
-//                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-//                 Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
-//             }
-//         });
-//        numberPickerCols.setOnScrollListener(new MyNumberPickerScrollListener(settings.getColumns()));
-//
-//        numberPickerRows.setOnScrollListener(new NumberPicker.OnScrollListener() {
-//
-//            @Override
-//            public void onScrollStateChange(NumberPicker numberPicker, int i) {
-//                if (i == SCROLL_STATE_IDLE) {
-//                    settings.setRows(numberPickerRows.getValue());
-//                    changed = true;
-//                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-//                    Toast.makeText(getActivity(), "Value Changed", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-////        numberPickerCols.set
-//
-//        numberPickerCols.setMaxValue(8);
-//        numberPickerRows.setMaxValue(8);
-//        numberPickerCols.setMinValue(2);
-//        numberPickerRows.setMinValue(2);
-//        numberPickerCols.setValue(settings.getColumns());
-//        numberPickerRows.setValue(settings.getRows());
     }
 
     /**
@@ -198,7 +148,39 @@ public class SettingsFragment extends Fragment {
      * @param data the image data.
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+//
+//        // Camera Request
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == REQUEST_CAMERA){
+//
+//                // Retrieve captured photo
+//                Uri imageUri = data.getData();
+//                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
+//
+//                // Update ImageView
+//                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
+//                imageView.setImageBitmap(bitmap);
+//
+//                // Update MySQL
+//                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+//
+//            }
+//
+//            // Gallery Request
+//            else if (requestCode == SELECT_IMAGE) {
+//
+//                // Retrieve selected image
+//                Uri imageUri = data.getData();
+//                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
+//
+//                // Update ImageView
+//                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
+//                imageView.setImageBitmap(bitmap);
+//
+//                // Update MySQL
+//                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+//            }
+//        }
         // Camera Request
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CAMERA){
@@ -212,7 +194,7 @@ public class SettingsFragment extends Fragment {
                 imageView.setImageBitmap(bitmap);
 
                 // Update MySQL
-                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+                settingFunctions.saveSettings(getActivity());
 
             }
 
@@ -228,7 +210,7 @@ public class SettingsFragment extends Fragment {
                 imageView.setImageBitmap(bitmap);
 
                 // Update MySQL
-                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+                settingFunctions.saveSettings(getActivity());
             }
         }
     }
@@ -275,7 +257,7 @@ public class SettingsFragment extends Fragment {
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
 
                             // Open Settings button
-                            .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(settings, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     goToSettings();
                                 }
@@ -329,7 +311,7 @@ public class SettingsFragment extends Fragment {
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
 
                             // Open Settings button
-                            .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(settings, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     goToSettings();
                                 }
@@ -395,10 +377,15 @@ public class SettingsFragment extends Fragment {
         final NumberPicker numberPicker = new NumberPicker(getContext());
         numberPicker.setMaxValue(8);
         numberPicker.setMinValue(2);
+//        if (which.equals("rows")) {
+//            numberPicker.setValue(settings.getRows());
+//        }else{
+//            numberPicker.setValue(settings.getColumns());
+//        }
         if (which.equals("rows")) {
-            numberPicker.setValue(settings.getRows());
+            numberPicker.setValue(sessionManager.getRows());
         }else{
-            numberPicker.setValue(settings.getColumns());
+            numberPicker.setValue(sessionManager.getCols());
         }
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
@@ -420,16 +407,24 @@ public class SettingsFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
 
 
+//                                if (which.equals("rows")){
+//                                    settings.setRows(numberPicker.getValue());
+//                                    rowsButton.setText(String.valueOf(settings.getRows()));
+//                                    sessionManager.setRows(settings.getRows());
+//                                }else{
+//                                    settings.setColumns(numberPicker.getValue());
+//                                    colsButton.setText(String.valueOf(settings.getColumns()));
+//                                    sessionManager.setCols(settings.getColumns());
+//                                }
+//                                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
                                 if (which.equals("rows")){
-                                    settings.setRows(numberPicker.getValue());
-                                    rowsButton.setText(String.valueOf(settings.getRows()));
-                                    sessionManager.setRows(settings.getRows());
+                                    sessionManager.setRows(numberPicker.getValue());
+                                    rowsButton.setText(String.valueOf(sessionManager.getRows()));
                                 }else{
-                                    settings.setColumns(numberPicker.getValue());
-                                    colsButton.setText(String.valueOf(settings.getColumns()));
-                                    sessionManager.setCols(settings.getColumns());
+                                    sessionManager.setCols(numberPicker.getValue());
+                                    colsButton.setText(String.valueOf(sessionManager.getCols()));
                                 }
-                                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
+                                settingFunctions.saveSettings(getActivity());
 
                             }
                         })

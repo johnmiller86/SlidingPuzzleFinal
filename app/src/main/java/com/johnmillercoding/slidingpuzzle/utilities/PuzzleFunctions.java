@@ -14,9 +14,10 @@ import java.io.File;
 
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 
+/**
+ *
+ */
 public class PuzzleFunctions {
-
-    // MySQL
 
     /**
      * Decodes and returns a bitmap from filepath.

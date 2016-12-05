@@ -41,13 +41,13 @@ import java.util.TimerTask;
 
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
+//import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
 
 public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener{
 
@@ -81,6 +81,8 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private int counter, movesCounter, rows, cols, startTime, currentTime, score, levelNum, movesLimit, movesRemaining;
     private boolean isPause, isCampaign;
 
+    // Network
+    private NetworkReceiver networkReceiver;
     private boolean isInFocus, connected;
 
     @Override
@@ -95,6 +97,11 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         super.onDestroy();
         cancelTimers();
 //        networkReceiver.removeListener(this);
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -129,7 +136,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 
         // Network stuff
         isInFocus = true;
-        NetworkReceiver networkReceiver = new NetworkReceiver();
+        networkReceiver = new NetworkReceiver();
         networkReceiver.addListener(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -159,8 +166,10 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             rows = 4;
             cols = 3;
         }else{
-            rows = settings.getRows();
-            cols = settings.getColumns();
+//            rows = settings.getRows();
+//            cols = settings.getColumns();
+            rows = sessionManager.getRows();
+            cols = sessionManager.getCols();
         }
 
         // Initializing ImageButtons and adding to list
@@ -662,13 +671,18 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             }
             leaderboardEntry.setMoves(movesCounter);
             leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
+
+//            // Open next level, rather than making another HTTP request
+//            if (sessionManager.getUnlocked() < 20) {
+//                sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
+//            }
         }else{
             showNoNetworkMenu();
         }
     }
 
     /**
-    * Getting random level via resource id string *TESTING*
+    * Getting random level via resource id string
     * @return a random resource string.
     */
     private String randomLevel(){
@@ -693,20 +707,9 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
      * Shows a menu when no network available.
      */
     private void showNoNetworkMenu() {
-//        final CharSequence[] charSequences = {"Retry", "Exit"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("No Network Connection");
         builder.setMessage("Your connection was interrupted and your score will not be recorded.  Would you like to retry to submit your score?");
-//        builder.setItems(charSequences, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int item) {
-//                if (charSequences[item].equals("Retry")) {
-//                    recordHighScores();
-//                }else if (charSequences[item].equals("Exit")) {
-//                    alertDialog.cancel();
-//                }
-//            }
-//        });
         builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

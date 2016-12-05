@@ -18,17 +18,10 @@ import java.util.Map;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-
-/**
- * Class to handle all puzzleFunctions DB functions.
- * @author John D. Miller.
- * @version 1.0.1
- * @since 09/10/2016
- */
 public class LeaderboardFunctions {
 
 //    /**
-//     * Gets the user's settings from MySQL.
+//     * Gets the leaderboards from MySQL.
 //     */
 //    public ArrayList<LeaderboardEntry> getLeaderboards(final Context context, ListViewAdapter listViewAdapter) {
 //        String requestString = "get_leaderboards";
@@ -104,7 +97,7 @@ public class LeaderboardFunctions {
 //    }
 
     /**
-     * Saves the user's settings in MySQL.
+     * Updates the MySQL leaderboards.
      */
     public void updateLeaderboards(final Activity activity, final LeaderboardEntry leaderboardEntry) {
         String requestString = "update_leaderboards";
@@ -160,7 +153,6 @@ public class LeaderboardFunctions {
                 params.put("time", leaderboardEntry.getTime());
                 return params;
             }
-
         };
 
         // Adding request to request queue

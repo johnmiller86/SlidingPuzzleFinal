@@ -22,7 +22,6 @@ import java.util.Map;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-
 public class UserFunctions {
 
     /**
@@ -78,10 +77,9 @@ public class UserFunctions {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<>();
                 params.put("email", user.getEmail());
-                params.put("password", getSha512SecurePassword(user.getPassword()));
+                params.put("password", hashPassword(user.getPassword()));
                 return params;
             }
-
         };
 
         // Adding request to request queue
@@ -146,7 +144,7 @@ public class UserFunctions {
                     params.put("facebook", "true");
                 }
                 params.put("email", user.getEmail());
-                params.put("password", getSha512SecurePassword(user.getPassword()));
+                params.put("password", hashPassword(user.getPassword()));
 
                 return params;
             }
@@ -158,23 +156,23 @@ public class UserFunctions {
     }
 
     /**
-     * Generates a sha512 encoded password.
-     * @param passwordToHash the password to be hashed.
+     * Hashes the user's password.
+     * @param password the password to be hashed.
      * @return the hashed password.
      */
-    private String getSha512SecurePassword(String passwordToHash) {
-        String generatedPassword = null;
+    private String hashPassword(String password) {
+        String hashedPassword = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
-            byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
+            byte[] bytes = md.digest(password.getBytes("UTF-8"));
             StringBuilder sb = new StringBuilder();
             for (byte aByte : bytes) {
                 sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
-            generatedPassword = sb.toString();
+            hashedPassword = sb.toString();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return generatedPassword;
+        return hashedPassword;
     }
 }

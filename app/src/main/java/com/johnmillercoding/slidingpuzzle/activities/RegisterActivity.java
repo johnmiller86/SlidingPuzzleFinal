@@ -53,14 +53,18 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
     @Override
     protected void onDestroy(){
         super.onDestroy();
-//        networkReceiver.removeListener(this);
+        try{
+            unregisterReceiver(networkReceiver);
+        }catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+        }
     }
 
     /**
      * Listener for the register button.
      * @param view the register button.
      */
-    private void registerAccount(View view) {
+    public void registerAccount(View view) {
 
         // Configure user
         User user = new User();

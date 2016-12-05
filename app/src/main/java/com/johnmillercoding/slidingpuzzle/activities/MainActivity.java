@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.johnmillercoding.slidingpuzzle.R;
-import com.johnmillercoding.slidingpuzzle.models.Settings;
 import com.johnmillercoding.slidingpuzzle.utilities.LeaderboardFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.LevelFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
@@ -36,7 +35,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     public static PuzzleFunctions puzzleFunctions;
     public static LeaderboardFunctions leaderboardFunctions;
     public static LevelFunctions levelFunctions;
-    public static Settings settings;
+//    public static Settings settings;
 
     // Fragment
     private FragmentTransaction fragmentTransaction;
@@ -69,7 +68,8 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         // Instantiating Session
         sessionManager = new SessionManager(getApplicationContext());
         settingFunctions = new SettingFunctions();
-        settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
+//        settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
+        settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
         puzzleFunctions = new PuzzleFunctions();
         leaderboardFunctions = new LeaderboardFunctions();
         levelFunctions = new LevelFunctions();
