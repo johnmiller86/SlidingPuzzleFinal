@@ -66,10 +66,10 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Instantiating Session
-        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager = new SessionManager(this);
         settingFunctions = new SettingFunctions();
-//        settings = settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
-        settingFunctions.getSettings(getApplicationContext(), sessionManager.getEmail());
+//        settings = settingFunctions.getSettings(this, sessionManager.getEmail());
+        settingFunctions.getSettings(this, sessionManager.getEmail());
         puzzleFunctions = new PuzzleFunctions();
         leaderboardFunctions = new LeaderboardFunctions();
         levelFunctions = new LevelFunctions();

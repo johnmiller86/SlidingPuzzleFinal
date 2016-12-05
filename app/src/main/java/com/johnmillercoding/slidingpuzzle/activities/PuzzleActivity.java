@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.StrictMode;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,9 @@ import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,20 +50,8 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
-//import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.settings;
 
 public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener{
-
-    // Session
-////    SessionManager sessionManager = new SessionManager(getBaseContext());
-//    private UserFunctions userFunctions; //= new UserFunctions();
-//    private User user; //= userFunctions.getUser(sessionManager.getEmail());
-//    private SettingFunctions settingFunctions;// = new SettingFunctions();
-//    private Settings settings;// = settingFunctions.getSettings(this, sessionManager.getEmail());
-////    private PuzzleFunctions puzzleFunctions;// = new PuzzleFunctions();
-//    private PuzzleFunctions puzzleFunctions;// = puzzleFunctions.getPuzzle(user);
-//    private LeaderboardFunctions leaderboardFunctions;// = new LeaderboardFunctions();
-////    private final LeaderboardEntry leaderboardEntry = leaderboardFunctions.getLeaderboards(user);
 
     // UI components
     private TableLayout tableLayout;
@@ -68,7 +59,6 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private ImageButton previousButton;
     private Button pauseButton;
     private PauseDialogFragment pauseDialogFragment;
-
 
     // Lists
     private List<ImageButton> imageButtons;
@@ -96,7 +86,6 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     public void onDestroy(){
         super.onDestroy();
         cancelTimers();
-//        networkReceiver.removeListener(this);
         try{
             unregisterReceiver(networkReceiver);
         }catch (IllegalArgumentException ex){
@@ -114,7 +103,6 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 
     @Override
     public void onBackPressed() {
-
         if (!isSolved() && isCampaign) {
             pauseDialogFragment.isQuitting();
             pause();
@@ -160,14 +148,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             rows = getIntent().getIntExtra(PUZZLE_ROW_TAG, 4);
             cols = getIntent().getIntExtra(PUZZLE_COL_TAG, 3);
         }
+
         // Free play use user settings if available
         else if (getIntent().getBooleanExtra("random", false)) {
 
             rows = 4;
             cols = 3;
         }else{
-//            rows = settings.getRows();
-//            cols = settings.getColumns();
             rows = sessionManager.getRows();
             cols = sessionManager.getCols();
         }
@@ -214,13 +201,21 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             movesLimit = intent.getIntExtra(PUZZLE_MOVES_TAG, 0);
             movesRemaining = movesLimit;
             movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
-//            rows = intent.getIntExtra(PUZZLE_ROW_TAG, 4);
-//            cols = intent.getIntExtra(PUZZLE_COL_TAG, 3);
 
             // Create bitmap
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(intent.getStringExtra(PUZZLE_RESOURCE_TAG), "drawable", getPackageName()));
-            createPuzzle(bitmap);
+//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(intent.getStringExtra(PUZZLE_RESOURCE_TAG), "drawable", getPackageName()));
+//            createPuzzle(bitmap);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            try {
+                URL url = new URL("https://www.johnmillercoding.com/SlidingPuzzle/bitmaps/level_" + levelNum + ".jpg" );
+                Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                createPuzzle(bitmap);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
         }
+
         // Free play
         else {
             isCampaign = false;
@@ -426,12 +421,8 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         isPause = !isPause;
         if (isPause) {
             pauseDialogFragment.show(getFragmentManager(), null);
-//            disableButtons();
-//            resetButton.setEnabled(false);
             cancelTimers();
         } else {
-//            enableButtons();
-//            resetButton.setEnabled(true);
             startTimer(currentTime);
         }
     }
@@ -497,7 +488,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             }else{
                 Toast.makeText(this, "Congratulations, You Win!!!", Toast.LENGTH_LONG).show();
             }
-        }else if(movesRemaining == 0){
+        }else if(isCampaign && movesRemaining == 0){
             cancelTimers();
             disableButtons();
             pauseButton.setEnabled(false);
@@ -687,7 +678,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     */
     private String randomLevel(){
         int level = (int) (Math.random() * 20) + 1;
-        return "level_" + level;
+        return "level_" + level + "_thumb";
     }
 
     @Override

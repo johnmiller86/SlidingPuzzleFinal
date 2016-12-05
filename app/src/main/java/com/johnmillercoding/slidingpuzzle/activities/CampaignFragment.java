@@ -77,14 +77,14 @@ public class CampaignFragment extends Fragment {
     /**
      * Configures the level selection ImageButtons.
      */
-    private void initialize() {
+    private void initialize(){
 
         // Foreground image resource ids
         int checkmark = getResources().getIdentifier("checkmark_thumb", "drawable", getActivity().getPackageName());
         int lock = getResources().getIdentifier("lock_thumb", "drawable", getActivity().getPackageName());
 
         // Referencing
-        ImageButton imageButton1 = (ImageButton) view.findViewById(R.id.level_1);
+        final ImageButton imageButton1 = (ImageButton) view.findViewById(R.id.level_1);
         ImageButton imageButton2 = (ImageButton) view.findViewById(R.id.level_2);
         ImageButton imageButton3 = (ImageButton) view.findViewById(R.id.level_3);
         ImageButton imageButton4 = (ImageButton) view.findViewById(R.id.level_4);
@@ -106,7 +106,7 @@ public class CampaignFragment extends Fragment {
         ImageButton imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
 
         // Adding to list
-        List<ImageButton> imageButtons = new ArrayList<>();
+        final List<ImageButton> imageButtons = new ArrayList<>();
         imageButtons.add(imageButton1);
         imageButtons.add(imageButton2);
         imageButtons.add(imageButton3);
@@ -147,6 +147,27 @@ public class CampaignFragment extends Fragment {
             }
         }
 
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
+//        for (int i = 0; i < 20; i++){
+//            final int I = i;
+//            URL url = null;
+//            try {
+//                url = new URL("https://www.johnmillercoding.com/SlidingPuzzle/bitmaps/level_" + (i + 1) + ".jpg");
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//            Glide.with(this).load(url).asBitmap().animate(R.anim.slide_up).into(new SimpleTarget<Bitmap>(400,400) {
+//                @Override
+//                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                    Drawable drawable = new BitmapDrawable(resource);
+//                    imageButtons.get(I).setBackground(drawable);
+//                }
+//            });
+//        }
+
         // Ad stuff
         interstitialAd = new InterstitialAd(getActivity());
         interstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
@@ -180,11 +201,9 @@ public class CampaignFragment extends Fragment {
         campaign.putExtra(PUZZLE_LEVEL_TAG, level.getLevelNum());
         campaign.putExtra(PUZZLE_COL_TAG, level.getColumns());
         campaign.putExtra(PUZZLE_ROW_TAG, level.getRows());
-            campaign.putExtra(PUZZLE_MOVES_TAG, level.getMoveLimit());
-//        startActivity(campaign);
+        campaign.putExtra(PUZZLE_MOVES_TAG, level.getMoveLimit());
         startActivityForResult(campaign, 0);
         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//        getActivity().finish();
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
