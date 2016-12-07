@@ -11,14 +11,21 @@ import java.util.List;
 
 public class NetworkReceiver extends BroadcastReceiver {
 
+    // Instance vars
     private final List<NetworkStateReceiverListener> listeners;
     private Boolean connected;
 
+    // Constructor
     public NetworkReceiver() {
         listeners = new ArrayList<>();
         connected = null;
     }
 
+    /**
+     * Notifies the listeners on network recieved.
+     * @param context the Fragment/Activity's context.
+     * @param intent the intent.
+     */
     public void onReceive(Context context, Intent intent) {
         if (intent == null || intent.getExtras() == null)
             return;
@@ -34,11 +41,18 @@ public class NetworkReceiver extends BroadcastReceiver {
         notifyStateToAll();
     }
 
+    /**
+     * Notifies the listeners of network changes.
+     */
     private void notifyStateToAll() {
         for(NetworkStateReceiverListener listener : listeners)
             notifyState(listener);
     }
 
+    /**
+     * Calls appropriate interface based on network state.
+     * @param listener the network listener.
+     */
     private void notifyState(NetworkStateReceiverListener listener) {
         if(connected == null || listener == null)
             return;
@@ -49,11 +63,18 @@ public class NetworkReceiver extends BroadcastReceiver {
             listener.networkUnavailable();
     }
 
-    public void addListener(NetworkStateReceiverListener l) {
-        listeners.add(l);
-        notifyState(l);
+    /**
+     * Adds a listener to the NetworkReciever instance.
+     * @param listener the network listener.
+     */
+    public void addListener(NetworkStateReceiverListener listener) {
+        listeners.add(listener);
+        notifyState(listener);
     }
 
+    /**
+     * Interfaces to be implemented.
+     */
     public interface NetworkStateReceiverListener {
         void networkAvailable();
         void networkUnavailable();

@@ -26,7 +26,7 @@ public class LevelFunctions {
 
 //        final ProgressDialog progressDialog = new ProgressDialog(activity);
 //        progressDialog.setMessage("Updating leaderboards...");
-//        progressDialog.show();
+//        progressDialog.show();  // TODO
 
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_UNLOCKED, new Response.Listener<String>() {
 
@@ -128,6 +128,6 @@ public class LevelFunctions {
 //            }
 //        };
 //        // Adding request to request queue
-//        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
+//        VolleyController.getInstance().addToRequestQueue(strReq, requestString);  // TODO Remove this?
 //    }
 }

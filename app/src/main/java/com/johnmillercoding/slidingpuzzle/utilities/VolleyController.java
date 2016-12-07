@@ -9,22 +9,31 @@ import com.android.volley.toolbox.Volley;
 
 public class VolleyController extends Application {
 
+    // Tag
     private static final String TAG = VolleyController.class.getSimpleName();
 
+    // The RequestQueue and self instance
     private RequestQueue mRequestQueue;
-
-    private static VolleyController mInstance;
+    private static VolleyController instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mInstance = this;
+        instance = this;
     }
 
+    /**
+     * Returns the instance of the VolleyController.
+     * @return the instance.
+     */
     public static synchronized VolleyController getInstance() {
-        return mInstance;
+        return instance;
     }
 
+    /**
+     * Gets the RequestQueue.
+     * @return the RequestQueue.
+     */
     private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -33,19 +42,14 @@ public class VolleyController extends Application {
         return mRequestQueue;
     }
 
+    /**
+     * Adds an HTTP request to the RequestQueue.
+     * @param req the String queue.
+     * @param tag the http request tag.
+     * @param <T> the template.
+     */
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
     }
-
-//    public <T> void addToRequestQueue(Request<T> req) {
-//        req.setTag(TAG);
-//        getRequestQueue().add(req);
-//    }
-//
-//    public void cancelPendingRequests(Object tag) {
-//        if (mRequestQueue != null) {
-//            mRequestQueue.cancelAll(tag);
-//        }
-//    }
 }

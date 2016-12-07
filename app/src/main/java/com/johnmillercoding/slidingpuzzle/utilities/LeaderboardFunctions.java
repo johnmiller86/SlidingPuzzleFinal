@@ -93,7 +93,7 @@ public class LeaderboardFunctions {
 //
 //        // Adding request to request queue
 //        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
-//        return leaderboards;
+//        return leaderboards;  //  TODO remove this?
 //    }
 
     /**
@@ -104,7 +104,7 @@ public class LeaderboardFunctions {
 
         final ProgressDialog progressDialog = new ProgressDialog(activity);
         progressDialog.setMessage("Updating leaderboards...");
-        progressDialog.show();
+        progressDialog.show();  // TODO
 
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_UPDATE_LEADERBOARDS, new Response.Listener<String>() {
 
