@@ -38,6 +38,7 @@ import static com.johnmillercoding.slidingpuzzle.models.ListViewAdapter.TIME;
 @SuppressWarnings("EmptyMethod")
 public class LeaderboardFragment extends Fragment {
 
+    // Leaderboard list and view.
     private ArrayList<HashMap<String, String>> list;
     private ListView listView;
 

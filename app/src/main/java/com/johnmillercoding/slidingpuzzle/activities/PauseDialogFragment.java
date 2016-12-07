@@ -16,6 +16,7 @@ import com.johnmillercoding.slidingpuzzle.R;
 
 public class PauseDialogFragment extends DialogFragment{
 
+    // Instance
     private PauseDialogListener pauseDialogListener;
     private boolean isQuitting;
 
@@ -43,6 +44,7 @@ public class PauseDialogFragment extends DialogFragment{
         return view;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onStart()
     {

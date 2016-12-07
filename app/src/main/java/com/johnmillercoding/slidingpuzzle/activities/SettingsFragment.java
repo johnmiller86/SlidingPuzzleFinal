@@ -46,9 +46,6 @@ public class SettingsFragment extends Fragment {
     private ImageView imageView;
     private Button rowsButton, colsButton;
 
-    // Settings
-//    private Settings settings;
-
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -67,7 +64,7 @@ public class SettingsFragment extends Fragment {
     }
 //
 //    @Override
-//    public void onAttach(Context context) {
+//    public void onAttach(Context context) {  // TODO Look for leaks and fix
 //        super.onAttach(context);
 //    }
 //
@@ -83,10 +80,6 @@ public class SettingsFragment extends Fragment {
 
 
         // UI components
-//        final NumberPicker numberPickerRows = (NumberPicker) view.findViewById(R.id.numberPickerRows);
-//        NumberPicker numberPickerCols = (NumberPicker) view.findViewById(R.id.numberPickerCols);
-//        settings = new Settings();
-//        settings.setColumns();
         imageView = (ImageView) view.findViewById(R.id.imageView);
         imageView.setImageBitmap(puzzleFunctions.getPuzzle(getActivity().getBaseContext()));
         Button imagePicker = (Button) view.findViewById(R.id.button_pick_puzzle);
@@ -148,39 +141,7 @@ public class SettingsFragment extends Fragment {
      * @param data the image data.
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        // Camera Request
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == REQUEST_CAMERA){
-//
-//                // Retrieve captured photo
-//                Uri imageUri = data.getData();
-//                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
-//
-//                // Update ImageView
-//                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
-//                imageView.setImageBitmap(bitmap);
-//
-//                // Update MySQL
-//                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
-//
-//            }
-//
-//            // Gallery Request
-//            else if (requestCode == SELECT_IMAGE) {
-//
-//                // Retrieve selected image
-//                Uri imageUri = data.getData();
-//                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
-//
-//                // Update ImageView
-//                Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
-//                imageView.setImageBitmap(bitmap);
-//
-//                // Update MySQL
-//                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
-//            }
-//        }
+
         // Camera Request
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CAMERA){
@@ -242,6 +203,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults){
         switch (requestCode){
+
+            // Camera
             case REQUEST_EXTERNAL_STORAGE_CAMERA: {
                 // Granted
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
@@ -377,11 +340,6 @@ public class SettingsFragment extends Fragment {
         final NumberPicker numberPicker = new NumberPicker(getContext());
         numberPicker.setMaxValue(8);
         numberPicker.setMinValue(2);
-//        if (which.equals("rows")) {
-//            numberPicker.setValue(settings.getRows());
-//        }else{
-//            numberPicker.setValue(settings.getColumns());
-//        }
         if (which.equals("rows")) {
             numberPicker.setValue(sessionManager.getRows());
         }else{
@@ -406,17 +364,6 @@ public class SettingsFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-
-//                                if (which.equals("rows")){
-//                                    settings.setRows(numberPicker.getValue());
-//                                    rowsButton.setText(String.valueOf(settings.getRows()));
-//                                    sessionManager.setRows(settings.getRows());
-//                                }else{
-//                                    settings.setColumns(numberPicker.getValue());
-//                                    colsButton.setText(String.valueOf(settings.getColumns()));
-//                                    sessionManager.setCols(settings.getColumns());
-//                                }
-//                                settingFunctions.saveSettings(getActivity(), sessionManager.getEmail(), settings);
                                 if (which.equals("rows")){
                                     sessionManager.setRows(numberPicker.getValue());
                                     rowsButton.setText(String.valueOf(sessionManager.getRows()));

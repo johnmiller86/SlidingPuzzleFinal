@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
 
     // Network
     private NetworkReceiver networkReceiver;
-    private boolean isInFocus, connected;
+    private boolean isInFocus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +157,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     /**
      * Configures the Facebook button.
      */
+    @SuppressWarnings("ConstantConditions")
     private void configureFacebook() {
 
         // Initialize
@@ -167,8 +169,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
 
         // Facebook button adjustments
         float fbIconScale = 1.45F;
-        Drawable drawable = getResources().getDrawable(
-                com.facebook.R.drawable.com_facebook_button_icon);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.com_facebook_button_icon, null);
         drawable.setBounds(0, 0, (int)(drawable.getIntrinsicWidth()*fbIconScale), (int)(drawable.getIntrinsicHeight()*fbIconScale));
         facebookLoginButton.setCompoundDrawables(drawable, null, null, null);
         facebookLoginButton.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.fb_margin_override_textpadding));
@@ -245,7 +246,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     @Override
     public void networkAvailable() {
         if (isInFocus) {
-            connected = true;
 
             // Dismiss AlertDialog
             if (alertDialog != null && alertDialog.isShowing()) {
@@ -277,7 +277,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
             }
             showNoNetworkMenu();
         }
-        connected = false;
     }
 
     /**

@@ -147,27 +147,6 @@ public class CampaignFragment extends Fragment {
             }
         }
 
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-//        for (int i = 0; i < 20; i++){
-//            final int I = i;
-//            URL url = null;
-//            try {
-//                url = new URL("https://www.johnmillercoding.com/SlidingPuzzle/bitmaps/level_" + (i + 1) + ".jpg");
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//            Glide.with(this).load(url).asBitmap().animate(R.anim.slide_up).into(new SimpleTarget<Bitmap>(400,400) {
-//                @Override
-//                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                    Drawable drawable = new BitmapDrawable(resource);
-//                    imageButtons.get(I).setBackground(drawable);
-//                }
-//            });
-//        }
-
         // Ad stuff
         interstitialAd = new InterstitialAd(getActivity());
         interstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
@@ -247,8 +226,8 @@ public class CampaignFragment extends Fragment {
                         level.setRows(jsonObject.getInt("rows"));
                         level.setTimeLimit(jsonObject.getInt("time_limit"));
                         level.setMoveLimit(jsonObject.getInt("move_limit"));
-//                        level.setUrl(jsonObject.getString("url"));  // In case we host images
                         level.setUrl(resName);
+//                        level.setUrl(jsonObject.getString("path"));  // TODO Mess with this
                         startGame(level);
                     } else {
                         // Error fetching data. Get the error message

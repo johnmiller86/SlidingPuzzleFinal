@@ -39,13 +39,20 @@ public class FragmentDrawer extends Fragment {
         // Required default constructor
     }
 
+    /**
+     * The listener for the NavigationDrawer.
+     * @param listener an instance of FragmentDrawerListener.
+     */
     public void setDrawerListener(FragmentDrawerListener listener) {
         this.drawerListener = listener;
     }
 
+    /**
+     * The list of NavigationDrawer items.
+     * @return the list.
+     */
     private static List<NavDrawerItem> getData() {
         List<NavDrawerItem> data = new ArrayList<>();
-
 
         // preparing navigation drawer items
         for (String title : titles) {
@@ -126,19 +133,26 @@ public class FragmentDrawer extends Fragment {
         return layout;
     }
 
-
+    /**
+     * Sets up the NavigationDrawer.
+     * @param fragmentId the containing fragment's id.
+     * @param drawerLayout the NavigationDrawer layout.
+     */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
     }
 
-    @SuppressWarnings("EmptyMethod")
+    @SuppressWarnings({"EmptyMethod", "UnusedParameters"})
     interface ClickListener {
         void onClick(View view, int position);
 
         void onLongClick(View view, int position);
     }
 
+    /**
+     * Listener for the NavigationDrawer's RecyclerViews.
+     */
     static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private final GestureDetector gestureDetector;
@@ -186,6 +200,7 @@ public class FragmentDrawer extends Fragment {
     /**
      * Interface for drawer listener.
      */
+    @SuppressWarnings("UnusedParameters")
     public interface FragmentDrawerListener {
         void onDrawerItemSelected(View view, int position);
     }

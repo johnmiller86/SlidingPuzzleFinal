@@ -16,7 +16,7 @@ import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.UserFunctions;
 
 
-@SuppressWarnings("UnusedParameters")
+@SuppressWarnings({"UnusedParameters", "WeakerAccess"})
 public class RegisterActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener {
 
     // UI Components

@@ -33,6 +33,6 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Disabling during splash screen
+        // Do nothing, disabled during splash screen
     }
 }

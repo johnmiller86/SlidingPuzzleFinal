@@ -34,8 +34,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     public static SettingFunctions settingFunctions;
     public static PuzzleFunctions puzzleFunctions;
     public static LeaderboardFunctions leaderboardFunctions;
-    public static LevelFunctions levelFunctions;
-//    public static Settings settings;
+    //    public static Settings settings;
 
     // Fragment
     private FragmentTransaction fragmentTransaction;
@@ -68,11 +67,10 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         // Instantiating Session
         sessionManager = new SessionManager(this);
         settingFunctions = new SettingFunctions();
-//        settings = settingFunctions.getSettings(this, sessionManager.getEmail());
         settingFunctions.getSettings(this, sessionManager.getEmail());
         puzzleFunctions = new PuzzleFunctions();
         leaderboardFunctions = new LeaderboardFunctions();
-        levelFunctions = new LevelFunctions();
+        LevelFunctions levelFunctions = new LevelFunctions();
         levelFunctions.setOpenLevels();
 
         // FragmentDrawer
@@ -115,7 +113,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         super.onDestroy();
 //        if (alertDialog != null && alertDialog.isShowing()){
 //            alertDialog.dismiss();
-//        }
+//        } // TODO remove?
         try{
             unregisterReceiver(networkReceiver);
         }catch (IllegalArgumentException ex){
@@ -128,7 +126,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         super.onStop();
 //        if (alertDialog != null && alertDialog.isShowing()){
 //            alertDialog.dismiss();
-//        }
+//        }  // TODO remove?
         try{
             unregisterReceiver(networkReceiver);
         }catch (IllegalArgumentException ex){
@@ -271,6 +269,10 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
         }
     }
 
+    /**
+     * Allows the user to enter a cheat.
+     * @param context the view's context.
+     */
     public static void enterCheat(final Context context){
         final EditText editText = new EditText(context);
         new AlertDialog.Builder(context)
