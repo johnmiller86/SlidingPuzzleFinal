@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-
     <TextView
         android:id="@+id/levelTV"
         android:layout_height="wrap_content"
@@ -12,8 +10,6 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:maxLines="1"/>
-
-
     <TextView
         android:id="@+id/email"
         android:layout_height="wrap_content"
@@ -27,7 +23,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollHorizontally="true"/>
-
     <TextView
         android:id="@+id/score"
         android:layout_height="wrap_content"
@@ -36,7 +31,6 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:maxLines="1"/>
-
     <TextView
         android:id="@+id/moves"
         android:layout_height="wrap_content"
@@ -45,8 +39,6 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:maxLines="1"/>
-
-
     <TextView
         android:id="@+id/timeLV"
         android:layout_height="wrap_content"
@@ -55,5 +47,4 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:maxLines="1"/>
-
 </LinearLayout>

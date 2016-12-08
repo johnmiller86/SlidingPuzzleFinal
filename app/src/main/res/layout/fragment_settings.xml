@@ -5,13 +5,11 @@
     tools:context=".activities.SettingsFragment"
     android:background="@drawable/level_1"
     android:id="@+id/fragment_settings">
-
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
             android:id="@+id/tableLayout">
-
             <TableRow
                 android:layout_marginTop="20dp">
                 <TextView
@@ -31,27 +29,9 @@
                     android:textAlignment="center"
                     />
             </TableRow>
-
             <TableRow
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
-                <!--<NumberPicker-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:id="@+id/numberPickerRows"-->
-                    <!--android:background="@drawable/gradient"-->
-                    <!--android:descendantFocusability="beforeDescendants"-->
-                    <!--android:layout_marginEnd="50dp"-->
-                    <!--android:layout_weight="1"/>-->
-
-                <!--<NumberPicker-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:id="@+id/numberPickerCols"-->
-                    <!--android:background="@drawable/gradient"-->
-                    <!--android:descendantFocusability="beforeDescendants"-->
-                    <!--android:layout_marginStart="50dp"-->
-                    <!--android:layout_weight="1"/>-->
                 <Button
                     android:id="@+id/button_pick_rows"
                     android:layout_width="wrap_content"
@@ -70,7 +50,6 @@
                     android:layout_weight="1"/>
             </TableRow>
         </TableLayout>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,7 +60,6 @@
         android:layout_alignParentStart="true"
         android:layout_margin="20dp"
         android:layout_alignParentEnd="true" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,5 +71,4 @@
         android:contentDescription="@string/default_image"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="20dp"/>
-
 </RelativeLayout>

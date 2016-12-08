@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true">
-
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
@@ -17,5 +16,4 @@
         android:textStyle="bold"
         android:textAlignment="center"
         android:background="@drawable/textview_selector" />
-
 </RelativeLayout>

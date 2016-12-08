@@ -666,7 +666,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
 //            // Open next level, rather than making another HTTP request
 //            if (sessionManager.getUnlocked() < 20) {
 //                sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
-//            }
+//            } // TODO add level completed screen for Play Store
         }else{
             showNoNetworkMenu();
         }

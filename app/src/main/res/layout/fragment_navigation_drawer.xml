@@ -3,15 +3,12 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:clickable="true">
-
-
     <RelativeLayout
         android:id="@+id/nav_header_container"
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/gradient">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="110dp"
@@ -50,16 +47,11 @@
                 android:textAlignment="center"
                 android:textAppearance="@android:style/TextAppearance.Large"/>
         </RelativeLayout>
-
     </RelativeLayout>
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawerList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/nav_header_container"
         android:layout_marginTop="15dp" />
-
-
 </RelativeLayout>

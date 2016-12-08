@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,7 +12,6 @@
         android:textSize="40sp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/gradient"/>
-
     <Button
         android:id="@+id/resumeButton"
         android:layout_width="309dp"
@@ -21,7 +19,6 @@
         android:text="@string/resume"
         android:layout_marginBottom="20dp"
         android:background="@drawable/button"/>
-
     <Button
         android:id="@+id/quitButton"
         android:layout_width="309dp"
