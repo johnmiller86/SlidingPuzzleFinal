@@ -4,14 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.johnmillercoding.slidingpuzzle.activities.LeaderboardFragment"
     android:background="@drawable/gradient">
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linear_layout"
         android:background="#CCFFFFFF">
-
-
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -20,9 +17,6 @@
             android:text="@string/level"
             android:textAlignment="center"
             android:textSize="18sp"/>
-
-
-
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -31,7 +25,6 @@
             android:text="@string/email"
             android:textAlignment="center"
             android:textSize="18sp"/>
-
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -40,7 +33,6 @@
             android:text="@string/score"
             android:textAlignment="center"
             android:textSize="18sp"/>
-
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -49,7 +41,6 @@
             android:text="@string/moves"
             android:textAlignment="center"
             android:textSize="18sp"/>
-
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -65,7 +56,6 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity"
         android:layout_below="@+id/linear_layout">
-
         <ListView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
@@ -73,6 +63,5 @@
             android:layout_alignParentStart="true"
             android:background="#CCFFFFFF">
         </ListView>
-
     </RelativeLayout>
 </RelativeLayout>

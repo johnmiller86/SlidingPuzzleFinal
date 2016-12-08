@@ -5,12 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:configChanges="orientation|keyboardHidden|screenSize">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
@@ -18,9 +16,7 @@
             tools:context=".slidingpuzzle_kline_white.activities.MainMenuActivity"
             android:background="@drawable/level_1">
         </FrameLayout>
-
     </LinearLayout>
-
     <fragment
         android:id="@+id/fragment_navigation_drawer"
         android:name="com.johnmillercoding.slidingpuzzle.activities.FragmentDrawer"
@@ -29,5 +25,4 @@
         android:layout_gravity="start"
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/fragment_navigation_drawer" />
-
 </android.support.v4.widget.DrawerLayout>
