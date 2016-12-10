@@ -36,7 +36,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_URL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
@@ -175,7 +175,7 @@ public class CampaignFragment extends Fragment {
 
     private void startGame(Level level){
         Intent campaign = new Intent(getActivity(), PuzzleActivity.class);
-        campaign.putExtra(PUZZLE_RESOURCE_TAG, level.getUrl());
+        campaign.putExtra(PUZZLE_URL_TAG, level.getUrl());
         campaign.putExtra(PUZZLE_TIMER_TAG, level.getTimeLimit());
         campaign.putExtra(PUZZLE_LEVEL_TAG, level.getLevelNum());
         campaign.putExtra(PUZZLE_COL_TAG, level.getColumns());
@@ -226,8 +226,7 @@ public class CampaignFragment extends Fragment {
                         level.setRows(jsonObject.getInt("rows"));
                         level.setTimeLimit(jsonObject.getInt("time_limit"));
                         level.setMoveLimit(jsonObject.getInt("move_limit"));
-                        level.setUrl(resName);
-//                        level.setUrl(jsonObject.getString("path"));  // TODO Mess with this
+                        level.setUrl(jsonObject.getString("url"));
                         startGame(level);
                     } else {
                         // Error fetching data. Get the error message

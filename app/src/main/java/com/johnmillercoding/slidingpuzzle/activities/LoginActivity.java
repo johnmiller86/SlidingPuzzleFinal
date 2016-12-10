@@ -293,7 +293,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
 
                     // Start intent, but leave this activity open to return to
                     Intent intent = new Intent(LoginActivity.this, PuzzleActivity.class);
-//                    intent.putExtra("random", true);
+                    intent.putExtra("offline", true);
                     alertDialog.dismiss();
                     startActivity(intent);
                 }

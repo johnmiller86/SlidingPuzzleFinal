@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 
 public class LeaderboardFunctions {
 
@@ -120,8 +121,10 @@ public class LeaderboardFunctions {
 
                     // Check for error node in json
                     if (!error) {
-                        Toast.makeText(getApplicationContext(), "Pow right in the kisser!!",Toast.LENGTH_LONG);
-                    } else {
+                        // Open next level, rather than making another HTTP request
+                        if (sessionManager.getUnlocked() < 20) {
+                            sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
+                        }                    } else {
                         // Error fetching data. Get the error message
                         String errorMsg = jsonObject.getString("error_msg");
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();

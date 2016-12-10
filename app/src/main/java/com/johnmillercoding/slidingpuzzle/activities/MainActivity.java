@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     private final String FRAGMENT_TAG = "fragment_tag";
 
     // Tags
-    public static final String PUZZLE_RESOURCE_TAG = "puzzle_mode_tag";
+    public static final String PUZZLE_URL_TAG = "puzzle_mode_tag";
     public static final String PUZZLE_TIMER_TAG = "puzzle_timer_tag";
     public static final String PUZZLE_LEVEL_TAG = "puzzle_level_tag";
     public static final String PUZZLE_ROW_TAG = "puzzle_row_tag";

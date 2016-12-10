@@ -1,5 +1,6 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,7 +46,7 @@ import java.util.TimerTask;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_RESOURCE_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_URL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
@@ -106,6 +107,9 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         if (!isSolved() && isCampaign) {
             pauseDialogFragment.isQuitting();
             pause();
+        }else if (isSolved() && isCampaign) {
+            setResult(Activity.RESULT_OK);
+            finish();
         }else{
             finish();
         }
@@ -144,13 +148,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         answerKey = new ArrayList<>();
 
         // Campaign, set size
-        if (getIntent().getStringExtra(PUZZLE_RESOURCE_TAG) != null){
+        if (getIntent().getStringExtra(PUZZLE_URL_TAG) != null){
             rows = getIntent().getIntExtra(PUZZLE_ROW_TAG, 4);
             cols = getIntent().getIntExtra(PUZZLE_COL_TAG, 3);
         }
 
         // Free play use user settings if available
-        else if (getIntent().getBooleanExtra("random", false)) {
+        else if (getIntent().getBooleanExtra("offline", false)) {
 
             rows = 4;
             cols = 3;
@@ -194,7 +198,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         Intent intent = getIntent();
 
         // Campaign
-        if (intent.getStringExtra(PUZZLE_RESOURCE_TAG) != null){
+        if (intent.getStringExtra(PUZZLE_URL_TAG) != null){
             isCampaign = true;
             startTime = intent.getIntExtra(PUZZLE_TIMER_TAG, 0);
             levelNum = intent.getIntExtra(PUZZLE_LEVEL_TAG, 1);
@@ -203,12 +207,10 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             movesTextView.setText(getResources().getQuantityString(R.plurals.moves, movesRemaining, movesRemaining));
 
             // Create bitmap
-//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(intent.getStringExtra(PUZZLE_RESOURCE_TAG), "drawable", getPackageName()));
-//            createPuzzle(bitmap);
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
-                URL url = new URL("https://www.johnmillercoding.com/SlidingPuzzle/bitmaps/level_" + levelNum + ".jpg" );
+                URL url = new URL(intent.getStringExtra(PUZZLE_URL_TAG));
                 Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 createPuzzle(bitmap);
             } catch(IOException e) {
@@ -222,8 +224,9 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             startTime = 0;
 
             // No network use a random puzzle
-            if (intent.getBooleanExtra("random", false)) {
+            if (intent.getBooleanExtra("offline", false)) {
                 createPuzzle(BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(randomLevel(), "drawable", getPackageName())));
+                Toast.makeText(this, "Connect to WiFi/Mobile to play full game with high res images!", Toast.LENGTH_LONG).show();
             }
 
             // Use free play settings
@@ -408,7 +411,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         }
 
         // Restarting
-        randomize();
+        if (getIntent().getBooleanExtra("offline", false)) {
+            timer = null;
+            createPuzzle(BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(randomLevel(), "drawable", getPackageName())));
+            Toast.makeText(this, "Connect to WiFi/Mobile to play full game with high res images!", Toast.LENGTH_LONG).show();
+        }else {
+            randomize();
+        }
         enableButtons();
         pauseButton.setEnabled(true);
         isPause = false;
@@ -662,11 +671,6 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             }
             leaderboardEntry.setMoves(movesCounter);
             leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
-
-//            // Open next level, rather than making another HTTP request
-//            if (sessionManager.getUnlocked() < 20) {
-//                sessionManager.setUnlocked(sessionManager.getUnlocked() + 1);
-//            } // TODO add level completed screen for Play Store
         }else{
             showNoNetworkMenu();
         }
