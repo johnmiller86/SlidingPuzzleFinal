@@ -51,6 +51,7 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
+import static com.johnmillercoding.slidingpuzzle.models.Level.NUM_LEVELS;
 
 public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener{
 
@@ -429,6 +430,11 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private void pause(){
         isPause = !isPause;
         if (isPause) {
+//            if (isCampaign) {
+//                Bundle args = new Bundle();
+//                args.putString(PUZZLE_URL_TAG, getIntent().getStringExtra(PUZZLE_URL_TAG));
+//                pauseDialogFragment.setArguments(args);
+//            }
             pauseDialogFragment.show(getFragmentManager(), null);
             cancelTimers();
         } else {
@@ -681,7 +687,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     * @return a random resource string.
     */
     private String randomLevel(){
-        int level = (int) (Math.random() * 20) + 1;
+        int level = (int) (Math.random() * NUM_LEVELS) + 1;
         return "level_" + level + "_thumb";
     }
 

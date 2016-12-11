@@ -40,6 +40,7 @@ import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
+import static com.johnmillercoding.slidingpuzzle.models.Level.NUM_LEVELS;
 
 @SuppressWarnings({"EmptyMethod", "MismatchedQueryAndUpdateOfCollection"})
 public class CampaignFragment extends Fragment {
@@ -102,8 +103,8 @@ public class CampaignFragment extends Fragment {
         ImageButton imageButton16 = (ImageButton) view.findViewById(R.id.level_16);
         ImageButton imageButton17 = (ImageButton) view.findViewById(R.id.level_17);
         ImageButton imageButton18 = (ImageButton) view.findViewById(R.id.level_18);
-        ImageButton imageButton19 = (ImageButton) view.findViewById(R.id.level_19);
-        ImageButton imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
+//        ImageButton imageButton19 = (ImageButton) view.findViewById(R.id.level_19);
+//        ImageButton imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
 
         // Adding to list
         final List<ImageButton> imageButtons = new ArrayList<>();
@@ -125,11 +126,11 @@ public class CampaignFragment extends Fragment {
         imageButtons.add(imageButton16);
         imageButtons.add(imageButton17);
         imageButtons.add(imageButton18);
-        imageButtons.add(imageButton19);
-        imageButtons.add(imageButton20);
+//        imageButtons.add(imageButton19);
+//        imageButtons.add(imageButton20);
 
         // Configure foreground images async
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < NUM_LEVELS; i++) {
 
             // Add listener
             imageButtons.get(i).setOnClickListener(imagesListener);

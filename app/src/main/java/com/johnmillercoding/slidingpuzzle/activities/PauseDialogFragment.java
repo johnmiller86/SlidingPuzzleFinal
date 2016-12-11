@@ -19,6 +19,7 @@ public class PauseDialogFragment extends DialogFragment{
     // Instance
     private PauseDialogListener pauseDialogListener;
     private boolean isQuitting;
+//    private ImageView imageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +42,16 @@ public class PauseDialogFragment extends DialogFragment{
                 confirm();
             }
         });
+//        URL url = null;
+//        try {
+//            url = new URL(getArguments().getString(PUZZLE_URL_TAG));
+//        }catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        imageView = (ImageView) view.findViewById(R.id.pauseImageView);
+//        Glide.with(this)
+//                .load(url)
+//                .into(imageView);
         return view;
     }
 

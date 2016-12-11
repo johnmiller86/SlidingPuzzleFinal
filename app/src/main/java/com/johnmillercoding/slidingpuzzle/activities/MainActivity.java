@@ -25,6 +25,8 @@ import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.SettingFunctions;
 
+import static com.johnmillercoding.slidingpuzzle.models.Level.NUM_LEVELS;
+
 @SuppressWarnings("EmptyMethod")
 @SuppressLint("CommitTransaction")
 public class MainActivity extends FragmentActivity implements FragmentDrawer.FragmentDrawerListener, NetworkReceiver.NetworkStateReceiverListener {
@@ -42,7 +44,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     private final String FRAGMENT_TAG = "fragment_tag";
 
     // Tags
-    public static final String PUZZLE_URL_TAG = "puzzle_mode_tag";
+    public static final String PUZZLE_URL_TAG = "puzzle_url_tag";
     public static final String PUZZLE_TIMER_TAG = "puzzle_timer_tag";
     public static final String PUZZLE_LEVEL_TAG = "puzzle_level_tag";
     public static final String PUZZLE_ROW_TAG = "puzzle_row_tag";
@@ -283,7 +285,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String input = editText.getText().toString().trim();
                         if (input.equals("/hacklevels")){
-                            sessionManager.setUnlocked(20);
+                            sessionManager.setUnlocked(NUM_LEVELS);
                             Toast.makeText(context, "Enjoy it while it lasts dirtbag!", Toast.LENGTH_LONG).show();
                         }
                     }
