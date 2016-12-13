@@ -28,16 +28,16 @@ public class SettingFunctions {
     public void getSettings(final Context context, final String email) {
         String requestString = "get_settings";
 
-        final ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Retrieving settings...");
-        progressDialog.show();
+//        final ProgressDialog progressDialog = new ProgressDialog(context);
+//        progressDialog.setMessage("Retrieving settings...");
+//        progressDialog.show();
 
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_SETTINGS, new Response.Listener<String>() {
 
 
                 @Override
             public void onResponse(String response) {
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
 
                 try {
 
@@ -67,8 +67,9 @@ public class SettingFunctions {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                progressDialog.dismiss();
+//                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "We're sorry! Our servers are down.", Toast.LENGTH_LONG).show();
+//                progressDialog.dismiss();
             }
         }) {
 
@@ -129,7 +130,8 @@ public class SettingFunctions {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "We're sorry! Our servers are down.", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }

@@ -1,10 +1,12 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,10 +30,20 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.LeaderboardEntry;
+import com.johnmillercoding.slidingpuzzle.models.Level;
+import com.johnmillercoding.slidingpuzzle.utilities.Config;
 import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
 import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
+import com.johnmillercoding.slidingpuzzle.utilities.VolleyController;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,21 +51,23 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_LEVEL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_MOVES_TAG;
-import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_URL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_ROW_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_TIMER_TAG;
+import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_URL_TAG;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.leaderboardFunctions;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.sessionManager;
 import static com.johnmillercoding.slidingpuzzle.models.Level.NUM_LEVELS;
 
-public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener{
+public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver.NetworkStateReceiverListener, PauseDialogFragment.PauseDialogListener, LevelCompleteDialogFragment.LevelCompleteDialogListener{
 
     // UI components
     private TableLayout tableLayout;
@@ -61,6 +75,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     private ImageButton previousButton;
     private Button pauseButton;
     private PauseDialogFragment pauseDialogFragment;
+    private LevelCompleteDialogFragment levelCompleteDialogFragment;
 
     // Lists
     private List<ImageButton> imageButtons;
@@ -136,6 +151,10 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         // Pause Dialog
         pauseDialogFragment = new PauseDialogFragment ();
         pauseDialogFragment.setPauseDialogListener(this);
+
+        // Level Complete Dialog
+        levelCompleteDialogFragment = new LevelCompleteDialogFragment();
+        levelCompleteDialogFragment.setLevelCompleteDialogListener(this);
 
         // Initializing Layout
         tableLayout = (TableLayout) findViewById(R.id.table_layout);
@@ -234,13 +253,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             else {
 
                 // Free play puzzleFunctions set, but deleted or on another device
-                if (sessionManager.getPuzzlePath() != null && !(new File(sessionManager.getPuzzlePath()).exists())) {
+                if (!pathNullOrEmtpy() && !(new File(sessionManager.getPuzzlePath()).exists())) {
                     Toast.makeText(this, "Image deleted or you are on another device!!", Toast.LENGTH_SHORT).show();
                     createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
                 }
 
                 // Use the free play puzzleFunctions
-                else if (sessionManager.getPuzzlePath() != null && new File(sessionManager.getPuzzlePath()).exists()) {
+                else if (!pathNullOrEmtpy() && new File(sessionManager.getPuzzlePath()).exists()) {
                     Bitmap bitmap = new PuzzleFunctions().getPuzzle(this);
 
                     // User has reinstalled and read permissions not yet enabled
@@ -258,6 +277,10 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
                 }
             }
         }
+    }
+
+    private boolean pathNullOrEmtpy(){
+        return sessionManager.getPuzzlePath() == null || sessionManager.getPuzzlePath().equals("");
     }
 
     /**
@@ -677,6 +700,11 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             }
             leaderboardEntry.setMoves(movesCounter);
             leaderboardFunctions.updateLeaderboards(this, leaderboardEntry);
+
+            Bundle args = new Bundle();
+            args.putInt("score", score);
+            levelCompleteDialogFragment.setArguments(args);
+            levelCompleteDialogFragment.show(getFragmentManager(), null);
         }else{
             showNoNetworkMenu();
         }
@@ -731,5 +759,100 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
     @Override
     public void unPause() {
         pause();
+    }
+
+    @Override
+    public void replay() {
+        restart();
+    }
+
+    @Override
+    public void nextLevel() {
+        if (levelNum < NUM_LEVELS){
+            getLevel(levelNum + 1);
+        }
+        else{
+            Toast.makeText(this, "This was the last level, you're awesome!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Gets the requested level.
+     */
+    private void getLevel(final int levelNum) {
+        String requestString = "get_level";
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading level...");
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        progressDialog.show();
+        StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
+            final Level level = new Level(levelNum);
+            @Override
+            public void onResponse(String response) {
+                progressDialog.dismiss();
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+                try {
+                    // Retrieve JSON error object
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean error = jsonObject.getBoolean("error");
+
+                    // Check for error node in json
+                    if (!error) {
+                        level.setLevelNum(levelNum);
+                        level.setColumns(jsonObject.getInt("columns"));
+                        level.setRows(jsonObject.getInt("rows"));
+                        level.setTimeLimit(jsonObject.getInt("time_limit"));
+                        level.setMoveLimit(jsonObject.getInt("move_limit"));
+                        level.setUrl(jsonObject.getString("url"));
+                        startGame(level);
+                    } else {
+                        // Error fetching data. Get the error message
+                        String errorMsg = jsonObject.getString("error_msg");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                    }
+                }
+                // JSON error
+                catch (JSONException e) {
+                    progressDialog.dismiss();
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+//                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "We're sorry! Our servers are down.", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<>();
+                params.put("level_num", String.valueOf(levelNum));
+                return params;
+            }
+        };
+        // Adding request to request queue
+        VolleyController.getInstance().addToRequestQueue(strReq, requestString);
+    }
+
+    private void startGame(Level level){
+        Intent campaign = new Intent(this, PuzzleActivity.class);
+        campaign.putExtra(PUZZLE_URL_TAG, level.getUrl());
+        campaign.putExtra(PUZZLE_TIMER_TAG, level.getTimeLimit());
+        campaign.putExtra(PUZZLE_LEVEL_TAG, level.getLevelNum());
+        campaign.putExtra(PUZZLE_COL_TAG, level.getColumns());
+        campaign.putExtra(PUZZLE_ROW_TAG, level.getRows());
+        campaign.putExtra(PUZZLE_MOVES_TAG, level.getMoveLimit());
+        startActivityForResult(campaign, 0);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 }

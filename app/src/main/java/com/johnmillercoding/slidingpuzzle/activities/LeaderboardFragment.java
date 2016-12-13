@@ -105,13 +105,13 @@ public class LeaderboardFragment extends Fragment {
                             // Configure entry and add to list
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put(LEVEL, String.valueOf(row.getInt("level_num")));
-                            hashMap.put(EMAIL, row.getString("email"));
+                            hashMap.put(EMAIL, row.getString("email").split("@")[0]);
                             hashMap.put(SCORE, String.valueOf(row.getInt("score")));
                             hashMap.put(MOVES, String.valueOf(row.getInt("moves")));
                             hashMap.put(TIME, row.getString("time"));
                             list.add(hashMap);
                         }
-                        ListViewAdapter adapter = new ListViewAdapter(getLayoutInflater(savedInstanceState), list);
+                        ListViewAdapter adapter = new ListViewAdapter(getContext(), list);
                         listView.setAdapter(adapter);
                     } else {
                         // Error fetching data. Get the error message
@@ -129,7 +129,8 @@ public class LeaderboardFragment extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "We're sorry! Our servers are down.", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
             }
         }) {

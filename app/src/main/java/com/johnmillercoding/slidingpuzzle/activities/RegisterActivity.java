@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         else if (user.getPassword().equals("")){
             Toast.makeText(RegisterActivity.this, "You must choose a password!!", Toast.LENGTH_SHORT).show();
         }
-        else if(!user.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")){
+        else if(!user.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"#$%&'()*+,-./:;<=>?@^_`{|}~\\]\\[\\\\])(?=\\S+$).{8,}$")){
             alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Password Policy");
             alertDialog.setMessage("Password must contain:\n\t-8 characters\n\t-1 uppercase\n\t-1 lowercase\n\t-1 number\n\t-1 special character\nSpaces are not permitted.");

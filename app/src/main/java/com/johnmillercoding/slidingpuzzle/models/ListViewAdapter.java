@@ -1,5 +1,6 @@
 package com.johnmillercoding.slidingpuzzle.models;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,15 @@ public class ListViewAdapter extends BaseAdapter{
 
     // Instance vars
     private final ArrayList<HashMap<String, String>> list;
-    private final LayoutInflater layoutInflater;
     private TextView level, email, score, moves;
     private TextView time;
+    private Context context;
 
     // Constructor
-    public ListViewAdapter(LayoutInflater layoutInflater, ArrayList<HashMap<String, String>> list){
+    public ListViewAdapter(Context context, ArrayList<HashMap<String, String>> list){
         super();
         this.list=list;
-        this.layoutInflater = layoutInflater;
+        this.context = context;
     }
 
     @Override
@@ -52,13 +53,15 @@ public class ListViewAdapter extends BaseAdapter{
     public View getView(int position, View view, ViewGroup parent) {
 
         if(view == null){
-            view = layoutInflater.inflate(R.layout.list_view_row, parent, false);
-            level=(TextView) view.findViewById(R.id.levelTV);
-            email=(TextView) view.findViewById(R.id.email);
-            score=(TextView) view.findViewById(R.id.score);
-            moves=(TextView) view.findViewById(R.id.moves);
-            time=(TextView) view.findViewById(R.id.timeLV);
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = layoutInflater.inflate(R.layout.list_view_row, null);
         }
+        level=(TextView) view.findViewById(R.id.levelTV);
+        email=(TextView) view.findViewById(R.id.email);
+        score=(TextView) view.findViewById(R.id.score);
+        moves=(TextView) view.findViewById(R.id.moves);
+        time=(TextView) view.findViewById(R.id.timeLV);
+
         HashMap<String, String> map=list.get(position);
         level.setText(map.get(LEVEL));
         email.setText(map.get(EMAIL));

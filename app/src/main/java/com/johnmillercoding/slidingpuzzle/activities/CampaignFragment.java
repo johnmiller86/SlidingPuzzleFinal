@@ -1,8 +1,10 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -170,7 +172,7 @@ public class CampaignFragment extends Fragment {
 
             String resName = getResources().getResourceEntryName(view.getId());
             int levelNum = Integer.valueOf(String.valueOf(resName).replaceAll("\\D+", ""));
-            getLevel(levelNum, resName);
+            getLevel(levelNum);
         }
     };
 
@@ -198,7 +200,7 @@ public class CampaignFragment extends Fragment {
                     .commitAllowingStateLoss();
         }
 
-        // Display an ad // TODO make sure this is only every 5 minutes or so
+        // Display an ad
         if (interstitialAd.isLoaded()){
             interstitialAd.show();
         }
@@ -207,15 +209,20 @@ public class CampaignFragment extends Fragment {
     /**
      * Gets the requested level.
      */
-    private void getLevel(final int levelNum, final String resName) {
+    private void getLevel(final int levelNum) {
         String requestString = "get_level";
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading level...");
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        progressDialog.show();
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
         final Level level = new Level(levelNum);
             @Override
             public void onResponse(String response) {
+                progressDialog.dismiss();
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
                 try {
-
                     // Retrieve JSON error object
                     JSONObject jsonObject = new JSONObject(response);
                     boolean error = jsonObject.getBoolean("error");
@@ -237,6 +244,8 @@ public class CampaignFragment extends Fragment {
                 }
                 // JSON error
                 catch (JSONException e) {
+                    progressDialog.dismiss();
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -245,7 +254,10 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+//                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "We're sorry! Our servers are down.", Toast.LENGTH_LONG).show();
             }
         }) {
 
