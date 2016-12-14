@@ -58,7 +58,7 @@ public class LeaderboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_leaderboard, container, false);
         listView = (ListView) view.findViewById(R.id.listView1);
         list = new ArrayList<>();
-        return getLeaderboards(view, savedInstanceState);
+        return getLeaderboards(view);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LeaderboardFragment extends Fragment {
     /**
      * Gets the user's settings from MySQL.
      */
-    private View getLeaderboards(View view, final Bundle savedInstanceState) {
+    private View getLeaderboards(View view) {
         String requestString = "get_leaderboards";
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext());

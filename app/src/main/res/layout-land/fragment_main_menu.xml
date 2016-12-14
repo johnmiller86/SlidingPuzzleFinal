@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             ads:adSize="FULL_WIDTHx100"
-            ads:adUnitId="@string/native_ad_test_unit_id"
+            ads:adUnitId="@string/native_ad"
             android:layout_below="@+id/logoTextView"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"

@@ -22,7 +22,7 @@ public class NetworkReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Notifies the listeners on network recieved.
+     * Notifies the listeners on network received.
      * @param context the Fragment/Activity's context.
      * @param intent the intent.
      */
@@ -64,7 +64,7 @@ public class NetworkReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Adds a listener to the NetworkReciever instance.
+     * Adds a listener to the NetworkReceiver instance.
      * @param listener the network listener.
      */
     public void addListener(NetworkStateReceiverListener listener) {

@@ -19,7 +19,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     private List<NavDrawerItem> data = Collections.emptyList();
     private final LayoutInflater layoutInflater;
 
-    // Constuctor
+    // Constructor
     public NavigationDrawerAdapter(Context context, List<NavDrawerItem> data) {
         layoutInflater = LayoutInflater.from(context);
         this.data = data;

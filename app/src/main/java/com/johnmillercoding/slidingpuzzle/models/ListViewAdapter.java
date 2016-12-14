@@ -1,6 +1,7 @@
 package com.johnmillercoding.slidingpuzzle.models;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,7 @@ public class ListViewAdapter extends BaseAdapter{
 
     // Instance vars
     private final ArrayList<HashMap<String, String>> list;
-    private TextView level, email, score, moves;
-    private TextView time;
-    private Context context;
+    private final Context context;
 
     // Constructor
     public ListViewAdapter(Context context, ArrayList<HashMap<String, String>> list){
@@ -54,17 +53,20 @@ public class ListViewAdapter extends BaseAdapter{
 
         if(view == null){
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.list_view_row, null);
+            view = layoutInflater.inflate(R.layout.list_view_row, parent, false);
         }
-        level=(TextView) view.findViewById(R.id.levelTV);
-        email=(TextView) view.findViewById(R.id.email);
-        score=(TextView) view.findViewById(R.id.score);
-        moves=(TextView) view.findViewById(R.id.moves);
-        time=(TextView) view.findViewById(R.id.timeLV);
+        TextView level = (TextView) view.findViewById(R.id.levelTV);
+        TextView email = (TextView) view.findViewById(R.id.email);
+        TextView score = (TextView) view.findViewById(R.id.score);
+        TextView moves = (TextView) view.findViewById(R.id.moves);
+        TextView time = (TextView) view.findViewById(R.id.timeLV);
 
         HashMap<String, String> map=list.get(position);
         level.setText(map.get(LEVEL));
         email.setText(map.get(EMAIL));
+        email.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        email.setSingleLine(true);
+        email.setMarqueeRepeatLimit(-1);
         email.setSelected(true);
         score.setText(map.get(SCORE));
         moves.setText(map.get(MOVES));

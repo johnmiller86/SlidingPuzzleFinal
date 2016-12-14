@@ -253,13 +253,13 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             else {
 
                 // Free play puzzleFunctions set, but deleted or on another device
-                if (!pathNullOrEmtpy() && !(new File(sessionManager.getPuzzlePath()).exists())) {
+                if (pathValid() && !(new File(sessionManager.getPuzzlePath()).exists())) {
                     Toast.makeText(this, "Image deleted or you are on another device!!", Toast.LENGTH_SHORT).show();
                     createPuzzle(BitmapFactory.decodeResource(getResources(), R.drawable.level_1));
                 }
 
                 // Use the free play puzzleFunctions
-                else if (!pathNullOrEmtpy() && new File(sessionManager.getPuzzlePath()).exists()) {
+                else if (pathValid() && new File(sessionManager.getPuzzlePath()).exists()) {
                     Bitmap bitmap = new PuzzleFunctions().getPuzzle(this);
 
                     // User has reinstalled and read permissions not yet enabled
@@ -279,8 +279,8 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         }
     }
 
-    private boolean pathNullOrEmtpy(){
-        return sessionManager.getPuzzlePath() == null || sessionManager.getPuzzlePath().equals("");
+    private boolean pathValid(){
+        return sessionManager.getPuzzlePath() != null && !sessionManager.getPuzzlePath().equals("");
     }
 
     /**

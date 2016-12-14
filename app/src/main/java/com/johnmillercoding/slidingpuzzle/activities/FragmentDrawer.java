@@ -130,6 +130,9 @@ public class FragmentDrawer extends Fragment {
         // Configure the TextView
         TextView textView = (TextView) layout.findViewById(R.id.emailTextView);
         textView.setText(sessionManager.getEmail());
+        textView.setSingleLine(true);
+        textView.setMarqueeRepeatLimit(-1);
+        textView.setSelected(true);
         return layout;
     }
 

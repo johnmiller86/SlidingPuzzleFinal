@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ads:adSize="FULL_WIDTHx80"
-        ads:adUnitId="@string/native_ad_test_unit_id"
+        ads:adUnitId="@string/native_ad"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/logoTextView">
     </com.google.android.gms.ads.NativeExpressAdView>

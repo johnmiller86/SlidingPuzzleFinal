@@ -21,7 +21,6 @@
         <item quantity="other">%1$d moves</item>
     </plurals>
     <string name="minutes_seconds">%1$dm %2$ds</string>
-    <string name="level_num">Level %1$d</string>
     <string name="default_image">default_image</string>
     <string name="rows">Rows</string>
     <string name="columns">Columns</string>
@@ -83,7 +82,7 @@
     <string name="banner_ad">ca-app-pub-3063574658609710~5220443587</string>
     <string name="interstitial_ad">ca-app-pub-3063574658609710/1935573180</string>
     <string name="native_ad">ca-app-pub-3063574658609710/6626137989</string>
-    <string name="native_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <!--<string name="native_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
     <string name="level_completed">Level Completed</string>
     <string name="next_level">Next Level</string>
     <string name="replay">Replay</string>
