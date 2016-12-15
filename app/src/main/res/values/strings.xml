@@ -83,6 +83,7 @@
     <string name="interstitial_ad">ca-app-pub-3063574658609710/1935573180</string>
     <string name="native_ad">ca-app-pub-3063574658609710/6626137989</string>
     <!--<string name="native_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="privacy_policy"><a href="https://www.johnmillercoding.com/SlidingPuzzle/">Privacy Policy</a></string>
     <string name="level_completed">Level Completed</string>
     <string name="next_level">Next Level</string>
     <string name="replay">Replay</string>

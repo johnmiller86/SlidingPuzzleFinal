@@ -1,15 +1,21 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.johnmillercoding.slidingpuzzle.R;
 import com.johnmillercoding.slidingpuzzle.models.User;
 import com.johnmillercoding.slidingpuzzle.utilities.NetworkReceiver;
@@ -21,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
 
     // UI Components
     private EditText emailEditText, passwordEditText, confirmPasswordEditText;
+    private CheckBox agreeCheckBox;
     private AlertDialog alertDialog;
 
     // Functions
@@ -39,6 +46,17 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         emailEditText = (EditText) findViewById(R.id.editTextRegisterEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextRegisterPassword);
         confirmPasswordEditText = (EditText) findViewById(R.id.editTextConfirmRegisterPassword);
+        agreeCheckBox = (CheckBox) findViewById(R.id.checkBoxAgree);
+
+        // Ad stuff
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad));
+        AdView adView = (AdView) findViewById(R.id.adView2);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
+                .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
+                .build();
+        adView.loadAd(adRequest);
+
 
         // Network stuff
         isInFocus = true;
@@ -96,6 +114,8 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         }
         else if (!user.getPassword().equals(confirmedPass)){
             Toast.makeText(RegisterActivity.this, "Password and confirmation do not match!!", Toast.LENGTH_SHORT).show();
+        }else if(!agreeCheckBox.isChecked()){
+            Toast.makeText(RegisterActivity.this, "You must agree to the Privacy Policy!!", Toast.LENGTH_SHORT).show();
         }else{
             if (connected) {
                 userFunctions.registerUser(this, user, false);
@@ -138,5 +158,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         builder.setCancelable(false);
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void privacyPolicy(View view) {
+        Uri uri = Uri.parse("https://www.johnmillercoding.com/SlidingPuzzle/");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 }
