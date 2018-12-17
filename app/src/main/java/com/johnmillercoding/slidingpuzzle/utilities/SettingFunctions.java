@@ -113,7 +113,7 @@ public class SettingFunctions {
                     // Check for error node in json
                     if (!error) {
 
-                        Toast.makeText(getApplicationContext(), "Settings saved!",Toast.LENGTH_LONG);
+                        Toast.makeText(getApplicationContext(), "Settings saved!",Toast.LENGTH_LONG).show();
                     } else {
                         // Error fetching data. Get the error message
                         String errorMsg = jsonObject.getString("error_msg");

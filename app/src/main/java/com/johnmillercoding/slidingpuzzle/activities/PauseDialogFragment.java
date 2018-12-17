@@ -25,7 +25,7 @@ public class PauseDialogFragment extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pause_dialog, container, false);
         setCancelable(false);
-        Button resumeButton = (Button) view.findViewById(R.id.resumeButton);
+        Button resumeButton = view.findViewById(R.id.resumeButton);
         resumeButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -34,7 +34,7 @@ public class PauseDialogFragment extends DialogFragment{
                 pauseDialogListener.unPause();
             }
         });
-        Button quitButton = (Button) view.findViewById(R.id.quitButton);
+        Button quitButton = view.findViewById(R.id.quitButton);
         quitButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

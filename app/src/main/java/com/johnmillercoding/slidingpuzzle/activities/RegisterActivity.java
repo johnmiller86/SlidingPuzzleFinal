@@ -43,14 +43,14 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
         setContentView(R.layout.activity_register);
 
         // Linking UI Components
-        emailEditText = (EditText) findViewById(R.id.editTextRegisterEmail);
-        passwordEditText = (EditText) findViewById(R.id.editTextRegisterPassword);
-        confirmPasswordEditText = (EditText) findViewById(R.id.editTextConfirmRegisterPassword);
-        agreeCheckBox = (CheckBox) findViewById(R.id.checkBoxAgree);
+        emailEditText = findViewById(R.id.editTextRegisterEmail);
+        passwordEditText = findViewById(R.id.editTextRegisterPassword);
+        confirmPasswordEditText = findViewById(R.id.editTextConfirmRegisterPassword);
+        agreeCheckBox = findViewById(R.id.checkBoxAgree);
 
         // Ad stuff
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad));
-        AdView adView = (AdView) findViewById(R.id.adView2);
+        AdView adView = findViewById(R.id.adView2);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
                 .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
@@ -161,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkReceiv
     }
 
     public void privacyPolicy(View view) {
-        Uri uri = Uri.parse("https://www.johnmillercoding.com/SlidingPuzzle/");
+        Uri uri = Uri.parse("https://johnmillercoding.com/SlidingPuzzle/");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }

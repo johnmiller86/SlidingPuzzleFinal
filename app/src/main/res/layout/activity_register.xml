@@ -105,7 +105,7 @@
             android:layout_toEndOf="@+id/textViewEmail" />
     </RelativeLayout>
     <CheckBox
-        android:text="I agree to the ToS and the Privacy Policy"
+        android:text="@string/i_agree_to_the_tos_and_the_privacy_policy"
         android:textColor="@color/colorAccent"
         android:buttonTint="@color/colorAccent"
         android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
-        android:text="Privacy Policy"
+        android:text="@string/privacy_policy"
         android:onClick="privacyPolicy"
         android:background="@drawable/button"
         android:id="@+id/button2" />

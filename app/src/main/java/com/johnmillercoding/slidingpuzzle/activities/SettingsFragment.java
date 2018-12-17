@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 
 import com.johnmillercoding.slidingpuzzle.R;
 
+import java.util.Objects;
+
 import static android.app.Activity.RESULT_OK;
 import static com.johnmillercoding.slidingpuzzle.R.string.settings;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.puzzleFunctions;
@@ -56,7 +58,7 @@ public class SettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         initialize();
@@ -80,9 +82,9 @@ public class SettingsFragment extends Fragment {
 
 
         // UI components
-        imageView = (ImageView) view.findViewById(R.id.imageView);
-        imageView.setImageBitmap(puzzleFunctions.getPuzzle(getActivity().getBaseContext()));
-        Button imagePicker = (Button) view.findViewById(R.id.button_pick_puzzle);
+        imageView = view.findViewById(R.id.imageView);
+        imageView.setImageBitmap(puzzleFunctions.getPuzzle(Objects.requireNonNull(getActivity()).getBaseContext()));
+        Button imagePicker = view.findViewById(R.id.button_pick_puzzle);
         imagePicker.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -90,8 +92,8 @@ public class SettingsFragment extends Fragment {
                 chooseImage();
             }
         });
-        rowsButton = (Button) view.findViewById(R.id.button_pick_rows);
-        colsButton = (Button) view.findViewById(R.id.button_pick_columns);
+        rowsButton = view.findViewById(R.id.button_pick_rows);
+        colsButton = view.findViewById(R.id.button_pick_columns);
         rowsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,18 +115,18 @@ public class SettingsFragment extends Fragment {
      */
     private void chooseImage() {
         final CharSequence[] charSequences = { "Take Photo", "Choose from Library", "Cancel" };
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
         builder.setTitle("Select a Photo");
         builder.setItems(charSequences, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (charSequences[item].equals("Take Photo")) {
 
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_CAMERA);
+                    ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_CAMERA);
                 }
                 else if (charSequences[item].equals("Choose from Library")) {
 
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_GALLERY);
+                    ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_GALLERY);
                 }
                 else if (charSequences[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -148,7 +150,7 @@ public class SettingsFragment extends Fragment {
 
                 // Retrieve captured photo
                 Uri imageUri = data.getData();
-                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
+                sessionManager.setPuzzlePath(getImagePath(Objects.requireNonNull(getContext()), imageUri));
 
                 // Update ImageView
                 Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
@@ -164,7 +166,7 @@ public class SettingsFragment extends Fragment {
 
                 // Retrieve selected image
                 Uri imageUri = data.getData();
-                sessionManager.setPuzzlePath(getImagePath(getContext(), imageUri));
+                sessionManager.setPuzzlePath(getImagePath(Objects.requireNonNull(getContext()), imageUri));
 
                 // Update ImageView
                 Bitmap bitmap = puzzleFunctions.getPuzzle(getContext());
@@ -213,8 +215,8 @@ public class SettingsFragment extends Fragment {
                     startActivityForResult(intent, REQUEST_CAMERA);
                 }
                 // Blocked
-                else if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
-                    new AlertDialog.Builder(getContext())
+                else if (!ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(getActivity()), Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                             .setTitle("Permission was blocked!")
                             .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzleFunctions, the app needs to " +
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
@@ -237,7 +239,7 @@ public class SettingsFragment extends Fragment {
                 }
                 // Denied
                 else{
-                    new AlertDialog.Builder(getContext())
+                    new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                             .setTitle("Permission was denied!")
                             .setMessage("You are unable to set a free play puzzleFunctions without access to external storage. Would you like to allow access?")
 
@@ -267,8 +269,8 @@ public class SettingsFragment extends Fragment {
                     startActivityForResult(intent, SELECT_IMAGE);
                 }
                 // Blocked
-                else if(!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)){
-                    new AlertDialog.Builder(getContext())
+                else if(!ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(getActivity()), Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                             .setTitle("Permission was blocked!")
                             .setMessage("You have previously blocked this app from accessing external storage. To set a free play puzzleFunctions, the app needs to " +
                                     "retrieve image paths and will not function without this access. Would you like to go to settings and allow this permission?")
@@ -291,7 +293,7 @@ public class SettingsFragment extends Fragment {
                 }
                 // Denied
                 else {
-                    new AlertDialog.Builder(getContext())
+                    new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                             .setTitle("Permission was denied!")
                             .setMessage("You are unable to set a free play puzzleFunctions without access to external storage. Would you like to allow access?")
 
@@ -320,7 +322,7 @@ public class SettingsFragment extends Fragment {
      */
     private void goToSettings(){
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        Uri uri = Uri.fromParts("package", Objects.requireNonNull(getActivity()).getPackageName(), null);
         intent.setData(uri);
         int REQUEST_PERMISSION = 0;
         startActivityForResult(intent, REQUEST_PERMISSION);
@@ -333,7 +335,7 @@ public class SettingsFragment extends Fragment {
     private void showNumberPicker(final String which){
 
         // Lock the orientation to preserve dialog and the async task
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         // Create the layout
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
@@ -354,7 +356,7 @@ public class SettingsFragment extends Fragment {
         relativeLayout.setLayoutParams(params);
         relativeLayout.addView(numberPicker,layoutParams);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
         alertDialogBuilder.setTitle("Select number of " + which);
         alertDialogBuilder.setView(relativeLayout);
         alertDialogBuilder

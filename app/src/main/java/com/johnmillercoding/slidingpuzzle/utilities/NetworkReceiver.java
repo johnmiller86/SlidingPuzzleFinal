@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NetworkReceiver extends BroadcastReceiver {
 
@@ -31,7 +32,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             return;
 
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo networkInfo = Objects.requireNonNull(connectivityManager).getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTING) {
             connected = true;

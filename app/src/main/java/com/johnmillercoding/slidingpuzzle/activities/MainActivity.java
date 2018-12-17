@@ -25,6 +25,8 @@ import com.johnmillercoding.slidingpuzzle.utilities.PuzzleFunctions;
 import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 import com.johnmillercoding.slidingpuzzle.utilities.SettingFunctions;
 
+import java.util.Objects;
+
 import static com.johnmillercoding.slidingpuzzle.models.Level.NUM_LEVELS;
 
 @SuppressWarnings("EmptyMethod")
@@ -77,7 +79,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
 
         // FragmentDrawer
         FragmentDrawer fragmentDrawer = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        fragmentDrawer.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        Objects.requireNonNull(fragmentDrawer).setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         fragmentDrawer.setDrawerListener(this);
 
         // Set profile picture if applicable

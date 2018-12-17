@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.NativeExpressAdView;
 import com.johnmillercoding.slidingpuzzle.R;
+
+import java.util.Objects;
 
 
 @SuppressWarnings("EmptyMethod")
@@ -35,7 +38,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_main_menu, container, false);
@@ -55,10 +58,10 @@ public class MainMenuFragment extends Fragment {
     private void initialize(){
 
         // Buttons
-        Button campaignPlayButton = (Button) view.findViewById(R.id.button_campaign);
-        Button freePlayButton = (Button) view.findViewById(R.id.button_freeplay);
-        Button settingsButton = (Button) view.findViewById(R.id.button_settings);
-        Button leaderboardsButton = (Button) view.findViewById(R.id.button_leaderboards);
+        Button campaignPlayButton = view.findViewById(R.id.button_campaign);
+        Button freePlayButton = view.findViewById(R.id.button_freeplay);
+        Button settingsButton = view.findViewById(R.id.button_settings);
+        Button leaderboardsButton = view.findViewById(R.id.button_leaderboards);
 
         // Listeners
         campaignPlayButton.setOnClickListener(new View.OnClickListener(){
@@ -91,7 +94,7 @@ public class MainMenuFragment extends Fragment {
         });
 
         // Ad stuff
-        NativeExpressAdView adView = (NativeExpressAdView) view.findViewById(R.id.adView2);
+        NativeExpressAdView adView = view.findViewById(R.id.adView2);
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
                 .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
@@ -104,7 +107,7 @@ public class MainMenuFragment extends Fragment {
      */
     private void campaignPlay() {
         MainActivity.fragment = new CampaignFragment();
-        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
         fragmentTransaction.replace(R.id.fragment_container, MainActivity.fragment);
         fragmentTransaction.commit();
@@ -116,7 +119,7 @@ public class MainMenuFragment extends Fragment {
     private void freePlay() {
         Intent intent = new Intent(getActivity(), PuzzleActivity.class);
         startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     /**
@@ -124,7 +127,7 @@ public class MainMenuFragment extends Fragment {
      */
     private void settings() {
         MainActivity.fragment = new SettingsFragment();
-        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
         fragmentTransaction.replace(R.id.fragment_container, MainActivity.fragment);
         fragmentTransaction.commit();
@@ -135,7 +138,7 @@ public class MainMenuFragment extends Fragment {
      */
     private void leaderboards() {
         MainActivity.fragment = new LeaderboardFragment();
-        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
         fragmentTransaction.replace(R.id.fragment_container, MainActivity.fragment);
         fragmentTransaction.commit();

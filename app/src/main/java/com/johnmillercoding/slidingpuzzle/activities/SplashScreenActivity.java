@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.gms.ads.MobileAds;
 import com.johnmillercoding.slidingpuzzle.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -18,7 +19,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(bundle);
         setContentView(R.layout.activity_splash_screen);
-
+        MobileAds.initialize(this, getResources().getString(R.string.banner_ad_unit_id));
         int displayLength = 1500;
         new Handler().postDelayed(new Runnable() {
             @Override

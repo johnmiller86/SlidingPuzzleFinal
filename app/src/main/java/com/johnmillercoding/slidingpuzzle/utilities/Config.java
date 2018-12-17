@@ -3,7 +3,7 @@ package com.johnmillercoding.slidingpuzzle.utilities;
 public class Config {
 
     // Host url
-    private static final String HOST_NAME = "https://www.johnmillercoding.com/";
+    private static final String HOST_NAME = "https://johnmillercoding.com/";
 
     // Login url
     static final String URL_LOGIN = HOST_NAME + "SlidingPuzzle/login.php";

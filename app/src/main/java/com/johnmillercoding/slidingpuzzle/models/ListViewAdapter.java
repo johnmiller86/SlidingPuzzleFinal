@@ -12,6 +12,7 @@ import com.johnmillercoding.slidingpuzzle.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ListViewAdapter extends BaseAdapter{
 
@@ -53,13 +54,13 @@ public class ListViewAdapter extends BaseAdapter{
 
         if(view == null){
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.list_view_row, parent, false);
+            view = Objects.requireNonNull(layoutInflater).inflate(R.layout.list_view_row, parent, false);
         }
-        TextView level = (TextView) view.findViewById(R.id.levelTV);
-        TextView email = (TextView) view.findViewById(R.id.email);
-        TextView score = (TextView) view.findViewById(R.id.score);
-        TextView moves = (TextView) view.findViewById(R.id.moves);
-        TextView time = (TextView) view.findViewById(R.id.timeLV);
+        TextView level = view.findViewById(R.id.levelTV);
+        TextView email = view.findViewById(R.id.email);
+        TextView score = view.findViewById(R.id.score);
+        TextView moves = view.findViewById(R.id.moves);
+        TextView time = view.findViewById(R.id.timeLV);
 
         HashMap<String, String> map=list.get(position);
         level.setText(map.get(LEVEL));

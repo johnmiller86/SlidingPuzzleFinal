@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -157,11 +158,11 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         levelCompleteDialogFragment.setLevelCompleteDialogListener(this);
 
         // Initializing Layout
-        tableLayout = (TableLayout) findViewById(R.id.table_layout);
+        tableLayout = findViewById(R.id.table_layout);
 
         // Initializing TextViews
-        movesTextView = (TextView) findViewById(R.id.currentMoves);
-        timerTextView = (TextView) findViewById(R.id.editTextTimer);
+        movesTextView = findViewById(R.id.currentMoves);
+        timerTextView = findViewById(R.id.editTextTimer);
 
         // Initializing Lists
         imageButtons = new ArrayList<>();
@@ -189,8 +190,8 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
         configureButtons();
 
         // Initializing pause and reset buttons
-        pauseButton = (Button) findViewById(R.id.button_pause);
-        Button resetButton = (Button) findViewById(R.id.button_reset);
+        pauseButton = findViewById(R.id.button_pause);
+        Button resetButton = findViewById(R.id.button_reset);
 
         // Add listeners
         pauseButton.setOnClickListener(new View.OnClickListener() {
@@ -532,7 +533,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
             pauseButton.setEnabled(false);
 
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(500);
+            Objects.requireNonNull(vibrator).vibrate(500);
             Toast.makeText(PuzzleActivity.this, "You ran out of moves!", Toast.LENGTH_LONG).show();
         }
     }
@@ -630,7 +631,7 @@ public class PuzzleActivity extends AppCompatActivity implements NetworkReceiver
                 @Override
                 public void onFinish() {
                     Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    vibrator.vibrate(500);
+                    Objects.requireNonNull(vibrator).vibrate(500);
                     Toast.makeText(PuzzleActivity.this, "Time's up!", Toast.LENGTH_LONG).show();
                     disableButtons();
                     timerTextView.setText(R.string.default_time);

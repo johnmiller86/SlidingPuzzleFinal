@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.johnmillercoding.slidingpuzzle.activities.MainActivity.PUZZLE_COL_TAG;
@@ -59,7 +61,7 @@ public class CampaignFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_campaign, container, false);
@@ -83,28 +85,28 @@ public class CampaignFragment extends Fragment {
     private void initialize(){
 
         // Foreground image resource ids
-        int checkmark = getResources().getIdentifier("checkmark_thumb", "drawable", getActivity().getPackageName());
+        int checkmark = getResources().getIdentifier("checkmark_thumb", "drawable", Objects.requireNonNull(getActivity()).getPackageName());
         int lock = getResources().getIdentifier("lock_thumb", "drawable", getActivity().getPackageName());
 
         // Referencing
-        final ImageButton imageButton1 = (ImageButton) view.findViewById(R.id.level_1);
-        ImageButton imageButton2 = (ImageButton) view.findViewById(R.id.level_2);
-        ImageButton imageButton3 = (ImageButton) view.findViewById(R.id.level_3);
-        ImageButton imageButton4 = (ImageButton) view.findViewById(R.id.level_4);
-        ImageButton imageButton5 = (ImageButton) view.findViewById(R.id.level_5);
-        ImageButton imageButton6 = (ImageButton) view.findViewById(R.id.level_6);
-        ImageButton imageButton7 = (ImageButton) view.findViewById(R.id.level_7);
-        ImageButton imageButton8 = (ImageButton) view.findViewById(R.id.level_8);
-        ImageButton imageButton9 = (ImageButton) view.findViewById(R.id.level_9);
-        ImageButton imageButton10 = (ImageButton) view.findViewById(R.id.level_10);
-        ImageButton imageButton11 = (ImageButton) view.findViewById(R.id.level_11);
-        ImageButton imageButton12 = (ImageButton) view.findViewById(R.id.level_12);
-        ImageButton imageButton13 = (ImageButton) view.findViewById(R.id.level_13);
-        ImageButton imageButton14 = (ImageButton) view.findViewById(R.id.level_14);
-        ImageButton imageButton15 = (ImageButton) view.findViewById(R.id.level_15);
-        ImageButton imageButton16 = (ImageButton) view.findViewById(R.id.level_16);
-        ImageButton imageButton17 = (ImageButton) view.findViewById(R.id.level_17);
-        ImageButton imageButton18 = (ImageButton) view.findViewById(R.id.level_18);
+        final ImageButton imageButton1 = view.findViewById(R.id.level_1);
+        ImageButton imageButton2 = view.findViewById(R.id.level_2);
+        ImageButton imageButton3 = view.findViewById(R.id.level_3);
+        ImageButton imageButton4 = view.findViewById(R.id.level_4);
+        ImageButton imageButton5 = view.findViewById(R.id.level_5);
+        ImageButton imageButton6 = view.findViewById(R.id.level_6);
+        ImageButton imageButton7 = view.findViewById(R.id.level_7);
+        ImageButton imageButton8 = view.findViewById(R.id.level_8);
+        ImageButton imageButton9 = view.findViewById(R.id.level_9);
+        ImageButton imageButton10 = view.findViewById(R.id.level_10);
+        ImageButton imageButton11 = view.findViewById(R.id.level_11);
+        ImageButton imageButton12 = view.findViewById(R.id.level_12);
+        ImageButton imageButton13 = view.findViewById(R.id.level_13);
+        ImageButton imageButton14 = view.findViewById(R.id.level_14);
+        ImageButton imageButton15 = view.findViewById(R.id.level_15);
+        ImageButton imageButton16 = view.findViewById(R.id.level_16);
+        ImageButton imageButton17 = view.findViewById(R.id.level_17);
+        ImageButton imageButton18 = view.findViewById(R.id.level_18);
 //        ImageButton imageButton19 = (ImageButton) view.findViewById(R.id.level_19);
 //        ImageButton imageButton20 = (ImageButton) view.findViewById(R.id.level_20);
 
@@ -185,7 +187,7 @@ public class CampaignFragment extends Fragment {
         campaign.putExtra(PUZZLE_ROW_TAG, level.getRows());
         campaign.putExtra(PUZZLE_MOVES_TAG, level.getMoveLimit());
         startActivityForResult(campaign, 0);
-        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -193,7 +195,7 @@ public class CampaignFragment extends Fragment {
         if ((requestCode == 0) && (resultCode == Activity.RESULT_OK)) {
 
             // Refresh fragment after level beaten
-            getActivity().getSupportFragmentManager()
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager()
                     .beginTransaction()
                     .detach(MainActivity.fragment)
                     .attach(MainActivity.fragment)
@@ -213,7 +215,7 @@ public class CampaignFragment extends Fragment {
         String requestString = "get_level";
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading level...");
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         progressDialog.show();
         StringRequest strReq = new StringRequest(Request.Method.POST, Config.URL_GET_LEVEL, new Response.Listener<String>() {
         final Level level = new Level(levelNum);

@@ -20,7 +20,7 @@ public class LevelCompleteDialogFragment extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_level_complete_dialog, container, false);
         setCancelable(false);
-        Button replayButton = (Button) view.findViewById(R.id.replayButton);
+        Button replayButton = view.findViewById(R.id.replayButton);
         replayButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -29,7 +29,7 @@ public class LevelCompleteDialogFragment extends DialogFragment{
                 levelCompleteDialogListener.replay();
             }
         });
-        Button nextLevelButton = (Button) view.findViewById(R.id.nextLevelButton);
+        Button nextLevelButton = view.findViewById(R.id.nextLevelButton);
         nextLevelButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -38,7 +38,7 @@ public class LevelCompleteDialogFragment extends DialogFragment{
                 levelCompleteDialogListener.nextLevel();
             }
         });
-        Button mainMenuButton = (Button) view.findViewById(R.id.mainMenuButton);
+        Button mainMenuButton = view.findViewById(R.id.mainMenuButton);
         mainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

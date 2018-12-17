@@ -1,7 +1,9 @@
 package com.johnmillercoding.slidingpuzzle.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import com.johnmillercoding.slidingpuzzle.utilities.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FragmentDrawer extends Fragment {
 
@@ -68,17 +71,17 @@ public class FragmentDrawer extends Fragment {
         super.onCreate(savedInstanceState);
 
         // drawer labels
-        titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+        titles = Objects.requireNonNull(getActivity()).getResources().getStringArray(R.array.nav_drawer_labels);
         sessionManager = new SessionManager(getActivity().getApplicationContext());
         longClicks = 0;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
+        RecyclerView recyclerView = layout.findViewById(R.id.drawerList);
 
         // Configure the NavigationDrawerAdapter
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getActivity(), getData());
@@ -98,8 +101,9 @@ public class FragmentDrawer extends Fragment {
         }));
 
         // Configure the ImageView easter egg
-        imageView = (ImageView) layout.findViewById(R.id.profile);
+        imageView = layout.findViewById(R.id.profile);
         imageView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return false;
@@ -108,27 +112,33 @@ public class FragmentDrawer extends Fragment {
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (longClicks == 0) {
-                    RotateAnimation rotateAnimation = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                    rotateAnimation.setDuration(1200);
-                    rotateAnimation.setFillAfter(true);
-                    imageView.startAnimation(rotateAnimation);
-                    longClicks++;
-                }else if(longClicks == 1){
-                    RotateAnimation rotateAnimation = new RotateAnimation(360, 0.0f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                    rotateAnimation.setDuration(1200);
-                    rotateAnimation.setFillAfter(true);
-                    imageView.startAnimation(rotateAnimation);
-                    longClicks++;
-                }else{
-                    MainActivity.enterCheat(getActivity());
+                switch (longClicks) {
+                    case 0: {
+                        RotateAnimation rotateAnimation = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setDuration(1200);
+                        rotateAnimation.setFillAfter(true);
+                        imageView.startAnimation(rotateAnimation);
+                        longClicks++;
+                        break;
+                    }
+                    case 1: {
+                        RotateAnimation rotateAnimation = new RotateAnimation(360, 0.0f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setDuration(1200);
+                        rotateAnimation.setFillAfter(true);
+                        imageView.startAnimation(rotateAnimation);
+                        longClicks++;
+                        break;
+                    }
+                    default:
+                        MainActivity.enterCheat(getActivity());
+                        break;
                 }
                 return false;
             }
         });
 
         // Configure the TextView
-        TextView textView = (TextView) layout.findViewById(R.id.emailTextView);
+        TextView textView = layout.findViewById(R.id.emailTextView);
         textView.setText(sessionManager.getEmail());
         textView.setSingleLine(true);
         textView.setMarqueeRepeatLimit(-1);
@@ -142,7 +152,7 @@ public class FragmentDrawer extends Fragment {
      * @param drawerLayout the NavigationDrawer layout.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
-        containerView = getActivity().findViewById(fragmentId);
+        containerView = Objects.requireNonNull(getActivity()).findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
     }
 
@@ -180,7 +190,7 @@ public class FragmentDrawer extends Fragment {
         }
 
         @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
@@ -190,7 +200,7 @@ public class FragmentDrawer extends Fragment {
         }
 
         @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
             // Required overridden method
         }
 

@@ -61,12 +61,12 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         configureFacebook();
 
         // Linking UI Components
-        emailEditText = (EditText) findViewById(R.id.editTextEmail);
-        passwordEditText = (EditText) findViewById(R.id.editTextPassword);
+        emailEditText = findViewById(R.id.editTextEmail);
+        passwordEditText = findViewById(R.id.editTextPassword);
 
         // Ad stuff
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad));
-        AdView adView = (AdView) findViewById(R.id.adView);
+        AdView adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // Emulators
                 .addTestDevice("91D6373C67AB407D90746EAF75E82B1A")  // S7 Edge
@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_button);
+        LoginButton facebookLoginButton = findViewById(R.id.facebook_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
         // Facebook button adjustments
