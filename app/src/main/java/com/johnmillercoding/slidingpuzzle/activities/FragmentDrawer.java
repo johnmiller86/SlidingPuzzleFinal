@@ -3,11 +3,11 @@ package com.johnmillercoding.slidingpuzzle.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -219,7 +219,7 @@ public class FragmentDrawer extends Fragment {
     }
 
     public void setProfilePicture(){
-        Glide.with(FragmentDrawer.this).load(sessionManager.getFacebookImageUrl()).into(imageView);
+        Glide.with(this.getContext()).load(sessionManager.getFacebookImageUrl()).into(imageView);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         imageView.setLayoutParams(layoutParams);
     }

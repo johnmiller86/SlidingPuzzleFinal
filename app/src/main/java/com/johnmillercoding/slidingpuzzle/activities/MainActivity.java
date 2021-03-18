@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -252,7 +252,7 @@ public class MainActivity extends FragmentActivity implements FragmentDrawer.Fra
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle savedFragment) {
+    protected void onSaveInstanceState(@NonNull Bundle savedFragment) {
         super.onSaveInstanceState(savedFragment);
 
         //Save the Fragment's instance

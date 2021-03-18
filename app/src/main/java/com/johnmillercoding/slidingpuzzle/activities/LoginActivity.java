@@ -6,9 +6,9 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -157,7 +157,6 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     /**
      * Configures the Facebook button.
      */
-    @SuppressWarnings("ConstantConditions")
     private void configureFacebook() {
 
         // Initialize
@@ -239,6 +238,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkReceiver.
     // Handles results from the FacebookLogin Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 

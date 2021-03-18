@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +70,7 @@ public class CampaignFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
@@ -141,11 +141,11 @@ public class CampaignFragment extends Fragment {
 
             // Set completed or locked
             if (i < sessionManager.getUnlocked()) {
-                Glide.with(this)
+                Glide.with(this.getContext())
                         .load(checkmark)
                         .into(imageButtons.get(i));
             } else if (i > sessionManager.getUnlocked()) {
-                Glide.with(this)
+                Glide.with(this.getContext())
                         .load(lock)
                         .into(imageButtons.get(i));
                 imageButtons.get(i).setEnabled(false);
@@ -173,7 +173,7 @@ public class CampaignFragment extends Fragment {
         public void onClick(View view) {
 
             String resName = getResources().getResourceEntryName(view.getId());
-            int levelNum = Integer.valueOf(String.valueOf(resName).replaceAll("\\D+", ""));
+            int levelNum = Integer.parseInt(String.valueOf(resName).replaceAll("\\D+", ""));
             getLevel(levelNum);
         }
     };
